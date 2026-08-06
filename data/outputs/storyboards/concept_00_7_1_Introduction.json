@@ -1,0 +1,76 @@
+{
+  "topic": "Introduction to Permutations",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Unlocking a Number Lock",
+  "scenario_summary": "A story about trying to unlock a suitcase with a 4-digit number lock, focusing on the concept of permutations.",
+  "visual_setting": "A clean, dark background with mathematical notation and geometric primitives.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Setting the Scene",
+      "duration_seconds": 8,
+      "narration": "Imagine a suitcase with a number lock. The lock has 4 wheels, each labeled with digits from 0 to 9. You remember the first digit is 7. How many sequences of 3 digits can you try?",
+      "animation_description": "A 4x10 grid representing the number lock. The first digit is highlighted as 7.",
+      "manim_hint": "Use a Grid to represent the number lock.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 2,
+      "title": "Choosing the Second Digit",
+      "duration_seconds": 8,
+      "narration": "After choosing the first digit, you have 9 remaining digits to choose from for the second digit.",
+      "animation_description": "The first digit remains fixed at 7. An arrow points to the remaining digits, highlighting 9 choices for the second digit.",
+      "manim_hint": "Use an arrow to highlight choices.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Choosing the Third Digit",
+      "duration_seconds": 8,
+      "narration": "Once the second digit is chosen, you have 8 remaining digits to choose from for the third digit.",
+      "animation_description": "The first two digits remain fixed. An arrow points to the remaining digits, highlighting 8 choices for the third digit.",
+      "manim_hint": "Use an arrow to highlight choices.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Calculating the Total Combinations",
+      "duration_seconds": 8,
+      "narration": "To find the total number of possible sequences, we multiply the number of choices for each digit.",
+      "animation_description": "Three numbers appear: 9, 8, and 7. An arrow points to each number, and a multiplication sign appears between them.",
+      "manim_hint": "Use numbers and a multiplication sign.",
+      "reveals_formula": true,
+      "math_overlay": "\\text{Total combinations} = 9 \\times 8 \\times 7",
+      "shot_type": "reveal"
+    },
+    {
+      "scene_number": 5,
+      "title": "Final Answer",
+      "duration_seconds": 8,
+      "narration": "The total number of possible sequences is 504.",
+      "animation_description": "The multiplication equation remains, and the result '504' appears on the screen.",
+      "manim_hint": "Use the result of the multiplication.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "reveal"
+    },
+    {
+      "scene_number": 6,
+      "title": "Recap",
+      "duration_seconds": 8,
+      "narration": "To find the number of permutations of choosing 3 digits from 9, multiply the number of choices for each digit.",
+      "animation_description": "The multiplication equation '9 \\times 8 \\times 7 = 504' is displayed. The result is highlighted.",
+      "manim_hint": "Recap the formula and the result.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}

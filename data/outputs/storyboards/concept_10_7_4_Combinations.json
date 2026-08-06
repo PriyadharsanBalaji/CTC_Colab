@@ -1,0 +1,98 @@
+{
+  "topic": "7.4 Combinations",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Forming Teams",
+  "scenario_summary": "A group of players forming teams to understand combinations.",
+  "visual_setting": "A clean dark background with mathematical notation and geometric shapes.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction",
+      "duration_seconds": 8,
+      "narration": "We have three players: X, Y, and Z. We need to form a team of two players. Is the team of X and Y the same as the team of Y and X?",
+      "animation_description": "Three labeled nodes (X, Y, Z) appear on the screen. An arrow points to 'X and Y' and another to 'Y and X', highlighting that order does not matter.",
+      "manim_hint": "Use `Dot` for the players and `Arrow` for the pairs.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 2,
+      "title": "Choosing Players",
+      "duration_seconds": 8,
+      "narration": "Let's choose two players from the three. How many ways can we do this?",
+      "animation_description": "Three nodes (X, Y, Z) appear. An arrow points to 'Choose X', then another to 'Choose Y' and 'Z'.",
+      "manim_hint": "Use `Dot` for the players and `Arrow` for the choices.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Counting Choices",
+      "duration_seconds": 8,
+      "narration": "We have 3 choices for the first player and 2 choices for the second player. But we've counted 'X and Y' and 'Y and X' as two different teams. How do we fix this?",
+      "animation_description": "Three nodes (X, Y, Z) appear. An arrow points to 'Choose X', then another to 'Choose Y' and 'Z'. A rectangle appears around 'X and Y' and 'Y and X', highlighting they are the same team.",
+      "manim_hint": "Use `Rectangle` to group the same teams.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Correcting Overcounting",
+      "duration_seconds": 8,
+      "narration": "We need to divide by 2 to correct the overcounting. This gives us the number of combinations.",
+      "animation_description": "Three nodes (X, Y, Z) appear. An arrow points to 'Choose X', then another to 'Choose Y' and 'Z'. A rectangle appears around 'X and Y' and 'Y and X', highlighting they are the same team. A division symbol appears, and 2 is written below it.",
+      "manim_hint": "Use `MathTex` to show the division.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 5,
+      "title": "Formula Introduction",
+      "duration_seconds": 8,
+      "narration": "The formula to calculate combinations is n choose k, which is n! / (k! * (n-k)!).",
+      "animation_description": "The formula n choose k appears on the screen. A rectangle appears around it, highlighting it as the formula.",
+      "manim_hint": "Use `MathTex` to write the formula.",
+      "reveals_formula": true,
+      "math_overlay": "\\binom{n}{k}",
+      "shot_type": "reveal"
+    },
+    {
+      "scene_number": 6,
+      "title": "Applying the Formula",
+      "duration_seconds": 8,
+      "narration": "For our example, n is 3 and k is 2. So, we calculate 3 choose 2.",
+      "animation_description": "The formula n choose k appears on the screen. A rectangle appears around it, highlighting it as the formula. The values 3 and 2 are substituted into the formula.",
+      "manim_hint": "Use `MathTex` to substitute the values.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 7,
+      "title": "Calculating the Result",
+      "duration_seconds": 8,
+      "narration": "3 choose 2 is 3. So, there are 3 possible teams.",
+      "animation_description": "The formula n choose k appears on the screen. A rectangle appears around it, highlighting it as the formula. The values 3 and 2 are substituted into the formula. The result, 3, appears next to the formula.",
+      "manim_hint": "Use `MathTex` to show the result.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 8,
+      "title": "Recap",
+      "duration_seconds": 8,
+      "narration": "To find the number of combinations of n items taken k at a time, use the formula n choose k. It's n! / (k! * (n-k)!).",
+      "animation_description": "The formula n choose k appears on the screen. A rectangle appears around it, highlighting it as the formula. The formula is explained in text below it.",
+      "manim_hint": "Use `MathTex` for the formula and `Text` for the explanation.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "topic": "Permutations and Combinations",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Exploring Permutations and Combinations",
+  "scenario_summary": "A journey through the world of permutations and combinations, using abstract mathematical concepts to solve real-world problems.",
+  "visual_setting": "A clean, dark background with mathematical notation, geometric primitives, and clean text labels.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Understanding Permutations",
+      "duration_seconds": 8,
+      "narration": "In permutations, the order of arrangement matters. For example, how many ways can we arrange 3 digits from 1 to 9?",
+      "animation_description": "Three circles labeled 1, 2, 3 appear. An arrow points to the first circle, indicating the first position.",
+      "manim_hint": "Use the `Permutation` class to demonstrate the arrangement of items.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 2,
+      "title": "Calculating Permutations",
+      "duration_seconds": 8,
+      "narration": "To find the number of permutations, we use the formula nPn = n!.",
+      "animation_description": "The formula nPn = n! appears, with n = 9. An arrow points to the factorial symbol.",
+      "manim_hint": "Display the factorial notation using `MathTex`.",
+      "reveals_formula": true,
+      "math_overlay": "nPn = n!",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "No Repeated Digits",
+      "duration_seconds": 8,
+      "narration": "When no digit is repeated, we calculate permutations using nPn.",
+      "animation_description": "The formula nPn = n! reappears. An arrow points to the variable n.",
+      "manim_hint": "Highlight the variable n using `MathTex`.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Calculating Permutations with No Repeats",
+      "duration_seconds": 8,
+      "narration": "For 3 digits from 1 to 9, the number of permutations is 9P3 = 9! / (9-3)! = 720.",
+      "animation_description": "The formula 9P3 = 9! / (9-3)! appears. The result 720 is displayed.",
+      "manim_hint": "Calculate the factorial using `MathTex` and display the result.",
+      "reveals_formula": true,
+      "math_overlay": "9P3 = 9! / (9-3)! = 720",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 5,
+      "title": "Permutations with Specific Conditions",
+      "duration_seconds": 8,
+      "narration": "How many 3-digit even numbers can be made using 1, 2, 3, 4, 6, 7 without repetition?",
+      "animation_description": "Six circles labeled 1, 2, 3, 4, 6, 7 appear. An arrow points to the circle labeled 2, indicating it must be the last digit for the number to be even.",
+      "manim_hint": "Use the `Permutation` class to demonstrate the arrangement of items with a condition.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 6,
+      "title": "Calculating Permutations with Conditions",
+      "duration_seconds": 8,
+      "narration": "For the last digit to be even, we have 3 choices (2, 4, 6). The remaining two digits can be arranged in 5P2 ways.",
+      "animation_description": "The formula 3 * 5P2 appears. The result 30 is displayed.",
+      "manim_hint": "Calculate the factorial using `MathTex` and display the result.",
+      "reveals_formula": true,
+      "math_overlay": "3 * 5P2 = 3 * 20 = 60",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 7,
+      "title": "Combinations",
+      "duration_seconds": 8,
+      "narration": "Combinations are used when the order does not matter. For example, how many ways can we choose 4 letters from the word 'EQUATION'?",
+      "animation_description": "The word 'EQUATION' is displayed. Four circles labeled E, Q, U, A, T, I, O, N appear. An arrow points to the first circle, indicating the first selection.",
+      "manim_hint": "Use the `CombinatorialObject` class to demonstrate the selection of items.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 8,
+      "title": "Calculating Combinations",
+      "duration_seconds": 8,
+      "narration": "To find the number of combinations, we use the formula nCr = n! / (r!(n-r)!)",
+      "animation_description": "The formula nCr = n! / (r!(n-r)!) appears, with n = 8 and r = 4. An arrow points to the factorial symbol.",
+      "manim_hint": "Display the factorial notation using `MathTex`.",
+      "reveals_formula": true,
+      "math_overlay": "nCr = n! / (r!(n-r)!)",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 9,
+      "title": "Combinations with Conditions",
+      "duration_seconds": 8,
+      "narration": "How many words can be formed using all letters of 'EQUATION' without repetition?",
+      "animation_description": "The word 'EQUATION' is displayed. Eight circles labeled E, Q, U, A, T, I, O, N appear. An arrow points to the first circle, indicating the first selection.",
+      "manim_hint": "Use the `CombinatorialObject` class to demonstrate the selection of items with no repetition.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 10,
+      "title": "Calculating Combinations with Conditions",
+      "duration_seconds": 8,
+      "narration": "The number of words is given by 8C8 = 1.",
+      "animation_description": "The formula 8C8 = 1 appears. The result 1 is displayed.",
+      "manim_hint": "Calculate the combination using `MathTex` and display the result.",
+      "reveals_formula": true,
+      "math_overlay": "8C8 = 1",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 11,
+      "title": "Recap",
+      "duration_seconds": 8,
+      "narration": "We learned about permutations and combinations, and how to calculate them using formulas. We also explored how to apply these concepts to real-world problems.",
+      "animation_description": "A recap slide with key formulas and concepts appears.",
+      "manim_hint": "Use a `Text` object to display the recap content.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}

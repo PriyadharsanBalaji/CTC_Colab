@@ -1,0 +1,109 @@
+{
+  "topic": "Permutations when all the objects are distinct",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Understanding Permutations",
+  "scenario_summary": "Exploring permutations through a step-by-step process",
+  "visual_setting": "Mathematical notation and geometric primitives",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Permutations",
+      "duration_seconds": 8,
+      "narration": "In permutations, we arrange objects in a specific order.",
+      "animation_description": "A set of distinct objects appears on the screen.",
+      "manim_hint": "Use a set of circles or text labels.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 2,
+      "title": "Counting Permutations",
+      "duration_seconds": 8,
+      "narration": "For n objects, the first position can be filled in n ways.",
+      "animation_description": "An object moves to each position, highlighting the choices.",
+      "manim_hint": "Use a moving object and arrows.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Second Position",
+      "duration_seconds": 8,
+      "narration": "After the first position, the second position can be filled in (n-1) ways.",
+      "animation_description": "Another object moves to the second position, highlighting the choices.",
+      "manim_hint": "Use a moving object and arrows.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "General Formula",
+      "duration_seconds": 8,
+      "narration": "This pattern continues until the rth position.",
+      "animation_description": "Objects fill each position, showing the formula n(n-1)(n-2)...(n-r+1).",
+      "manim_hint": "Use a moving object and arrows.",
+      "reveals_formula": true,
+      "math_overlay": "n! = n(n-1)(n-2)...(n-r+1)",
+      "shot_type": "reveal"
+    },
+    {
+      "scene_number": 5,
+      "title": "Factorial Notation",
+      "duration_seconds": 8,
+      "narration": "We use n! to represent the product of the first n natural numbers.",
+      "animation_description": "A product of numbers from 1 to n is shown, transitioning to n!.",
+      "manim_hint": "Use a product of numbers and the ! symbol.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 6,
+      "title": "Factorial Examples",
+      "duration_seconds": 8,
+      "narration": "Let's evaluate some factorial expressions.",
+      "animation_description": "The expressions 5!, 7!, and 7! - 5! are calculated step-by-step.",
+      "manim_hint": "Use a calculator or step-by-step breakdown.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 7,
+      "title": "Permutation Formula",
+      "duration_seconds": 8,
+      "narration": "We can use the permutation formula to evaluate nPr.",
+      "animation_description": "The formula nPr is explained and an example is solved.",
+      "manim_hint": "Use the formula and a specific example.",
+      "reveals_formula": true,
+      "math_overlay": "nPr = \\frac{n!}{(n-r)!}",
+      "shot_type": "reveal"
+    },
+    {
+      "scene_number": 8,
+      "title": "Solving for x",
+      "duration_seconds": 8,
+      "narration": "Let's solve for x in a given equation involving factorials.",
+      "animation_description": "The equation is solved step-by-step, showing the final value of x.",
+      "manim_hint": "Use algebraic manipulation and factorial properties.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 9,
+      "title": "Recap",
+      "duration_seconds": 8,
+      "narration": "Recap the key points about permutations and factorials.",
+      "animation_description": "A summary of the concepts and formulas is shown.",
+      "manim_hint": "Use a summary slide with key points.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}

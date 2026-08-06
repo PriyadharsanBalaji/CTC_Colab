@@ -1,0 +1,131 @@
+{
+  "topic": "7.2 Fundamental Principle of Counting",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Exploring Choices and Outcomes",
+  "scenario_summary": "A series of abstract mathematical scenes demonstrating how to calculate the number of possible outcomes when making multiple choices.",
+  "visual_setting": "Abstract mathematical notation and geometric shapes",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to the Problem",
+      "duration_seconds": 8,
+      "narration": "Mohan has 3 pants and 2 shirts. How many different pairs can he dress up with?",
+      "animation_description": "Three pants labeled P1, P2, P3 and two shirts labeled S1, S2 are displayed. An arrow points to the first step of choosing a pant.",
+      "manim_hint": "Use `VGroup` to group pants and shirts and `Arrow` to indicate the first step.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 2,
+      "title": "Choosing a Pant",
+      "duration_seconds": 8,
+      "narration": "Mohan chooses a pant. Now, how many shirts can he choose?",
+      "animation_description": "An arrow points to the next step of choosing a shirt after a pant is chosen. The shirts are highlighted.",
+      "manim_hint": "Use `Arrow` to indicate the next step and `Color` to highlight shirts.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Choosing a Shirt",
+      "duration_seconds": 8,
+      "narration": "Mohan chooses a shirt. Now, how many pairs can he make?",
+      "animation_description": "An arrow points to the final step of choosing a shirt, showing all possible pairs.",
+      "manim_hint": "Use `Arrow` to indicate the final step and `Text` to label pairs.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Calculating the Total Number of Pairs",
+      "duration_seconds": 8,
+      "narration": "For every choice of a pant, there are 2 choices of a shirt. So, the total number of pairs is 3 times 2.",
+      "animation_description": "The formula 3 \u00d7 2 = 6 is displayed. An arrow points to the formula.",
+      "manim_hint": "Use `MathTex` to display the formula and `Arrow` to point to it.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 5,
+      "title": "Generalizing the Principle",
+      "duration_seconds": 8,
+      "narration": "This principle can be generalized for any number of choices. For example, if Mohan had 3 pants, 2 shirts, and 1 hat, how many outfits could he make?",
+      "animation_description": "Three pants, two shirts, and one hat are displayed. An arrow points to the next step of choosing a hat.",
+      "manim_hint": "Use `VGroup` to group items and `Arrow` to indicate the next step.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 6,
+      "title": "Calculating Outfits with Multiple Choices",
+      "duration_seconds": 8,
+      "narration": "For every choice of a pant, there are 2 choices of a shirt, and for every pair, there is 1 choice of a hat. So, the total number of outfits is 3 times 2 times 1.",
+      "animation_description": "The formula 3 \u00d7 2 \u00d7 1 = 6 is displayed. An arrow points to the formula.",
+      "manim_hint": "Use `MathTex` to display the formula and `Arrow` to point to it.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 7,
+      "title": "Applying the Principle to Real Problems",
+      "duration_seconds": 8,
+      "narration": "Sabnam has 2 school bags, 3 tiffin boxes, and 2 water bottles. How many different ways can she carry these items?",
+      "animation_description": "Two school bags, three tiffin boxes, and two water bottles are displayed. An arrow points to the first step of choosing a school bag.",
+      "manim_hint": "Use `VGroup` to group items and `Arrow` to indicate the first step.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 8,
+      "title": "Calculating the Number of Ways to Carry Items",
+      "duration_seconds": 8,
+      "narration": "For every choice of a school bag, there are 3 choices of a tiffin box, and for every pair, there are 2 choices of a water bottle. So, the total number of ways is 2 times 3 times 2.",
+      "animation_description": "The formula 2 \u00d7 3 \u00d7 2 = 12 is displayed. An arrow points to the formula.",
+      "manim_hint": "Use `MathTex` to display the formula and `Arrow` to point to it.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 9,
+      "title": "Revealing the Fundamental Principle of Counting",
+      "duration_seconds": 8,
+      "narration": "The principle states that if an event can occur in m different ways, following which another event can occur in n different ways, then the total number of occurrence of the events in the given order is m times n.",
+      "animation_description": "The formula m \u00d7 n is displayed. An arrow points to the formula.",
+      "manim_hint": "Use `MathTex` to display the formula and `Arrow` to point to it.",
+      "reveals_formula": true,
+      "math_overlay": "m \\times n",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 10,
+      "title": "Generalizing the Principle",
+      "duration_seconds": 8,
+      "narration": "This principle can be generalized for any finite number of events. For example, if an event can occur in m different ways, following which another event can occur in n different ways, following which a third event can occur in p different ways, then the total number of occurrence to the events in the given order is m times n times p.",
+      "animation_description": "The formula m \u00d7 n \u00d7 p is displayed. An arrow points to the formula.",
+      "manim_hint": "Use `MathTex` to display the formula and `Arrow` to point to it.",
+      "reveals_formula": true,
+      "math_overlay": "m \\times n \\times p",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 11,
+      "title": "Recap and Application",
+      "duration_seconds": 8,
+      "narration": "In this video, we learned how to apply the fundamental principle of counting to solve problems involving multiple choices. We can calculate the total number of possible outcomes by multiplying the number of choices for each event.",
+      "animation_description": "A recap of the steps and formulas is displayed. Text labels explain the concept.",
+      "manim_hint": "Use `Text` to display recap and formulas.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}

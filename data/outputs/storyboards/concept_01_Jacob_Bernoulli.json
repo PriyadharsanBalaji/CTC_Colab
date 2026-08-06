@@ -1,0 +1,76 @@
+{
+  "topic": "Jacob Bernoulli",
+  "grade": 8,
+  "total_duration_seconds": 64,
+  "scenario_title": "Understanding Counting Techniques",
+  "scenario_summary": "Exploring counting principles using abstract mathematical sets and geometric shapes.",
+  "visual_setting": "A clean, dark background with mathematical notation and geometric primitives.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Counting",
+      "duration_seconds": 8,
+      "narration": "Imagine you have a set of 3 shirts and 2 pants. How many different outfits can you make?",
+      "animation_description": "Three shirts and two pants are displayed as nodes. Arrows connect each shirt to each pant, showing all possible combinations.",
+      "manim_hint": "Use `Dot` for shirts and pants, and `Line` to connect them.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "establishing"
+    },
+    {
+      "scene_number": 2,
+      "title": "Counting Principle",
+      "duration_seconds": 8,
+      "narration": "Each shirt can be paired with each pant. So, if you have 3 shirts, you can make 3 x 2 = 6 outfits.",
+      "animation_description": "A formula 3 x 2 = 6 appears on the screen. An arrow points to the formula, highlighting the multiplication.",
+      "manim_hint": "Use `MathTex` to display the formula.",
+      "reveals_formula": true,
+      "math_overlay": "3 \\times 2 = 6",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Generalizing the Principle",
+      "duration_seconds": 8,
+      "narration": "This principle works for any number of items. If you have n shirts and m pants, you can make n x m outfits.",
+      "animation_description": "Variables n and m are introduced, and a formula n x m = x appears. An arrow points to the formula, highlighting the general principle.",
+      "manim_hint": "Use `MathTex` to display variables and formulas.",
+      "reveals_formula": true,
+      "math_overlay": "n \\times m = x",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Applying to Larger Sets",
+      "duration_seconds": 8,
+      "narration": "Let's apply this to a larger set. Imagine you have 5 different books and 4 different bookmarks. How many ways can you choose one book and one bookmark?",
+      "animation_description": "Five books and four bookmarks are displayed as nodes. Arrows connect each book to each bookmark, showing all possible combinations.",
+      "manim_hint": "Use `Dot` for books and bookmarks, and `Line` to connect them.",
+      "reveals_formula": false,
+      "math_overlay": null,
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 5,
+      "title": "Calculating Larger Combinations",
+      "duration_seconds": 8,
+      "narration": "For 5 books and 4 bookmarks, you can make 5 x 4 = 20 different combinations.",
+      "animation_description": "A formula 5 x 4 = 20 appears on the screen. An arrow points to the formula, highlighting the multiplication.",
+      "manim_hint": "Use `MathTex` to display the formula.",
+      "reveals_formula": true,
+      "math_overlay": "5 \\times 4 = 20",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 6,
+      "title": "Recap and Generalization",
+      "duration_seconds": 8,
+      "narration": "In summary, the counting principle states that if you have n items and m items, you can make n x m different combinations.",
+      "animation_description": "A recap of the formula n x m = x is displayed. The principle is repeated with different values for n and m.",
+      "manim_hint": "Use `MathTex` to display the formula and recap.",
+      "reveals_formula": true,
+      "math_overlay": "n \\times m = x",
+      "shot_type": "recap"
+    }
+  ]
+}

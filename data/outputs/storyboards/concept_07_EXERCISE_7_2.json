@@ -1,0 +1,87 @@
+{
+  "topic": "EXERCISE 7.2",
+  "grade": 8,
+  "total_duration_seconds": 40,
+  "scenario_title": "Mathematical Concepts in Action",
+  "scenario_summary": "A journey through permutations and combinations using abstract mathematical sets and formulas.",
+  "visual_setting": "Mathematical notation, geometric primitives, and clean text labels",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Factorial Basics",
+      "duration_seconds": 8,
+      "narration": "In mathematics, the factorial of a number n, denoted by n!, is the product of all positive integers less than or equal to n. For example, 4! = 4 \u00d7 3 \u00d7 2 \u00d7 1 = 24.",
+      "animation_description": "A formula for factorial appears on the screen: n! = n \u00d7 (n-1) \u00d7 (n-2) \u00d7 ... \u00d7 1. An arrow points to the variable n.",
+      "manim_hint": "Use MathTex to display the factorial formula.",
+      "reveals_formula": true,
+      "math_overlay": "n! = n \\times (n-1) \\times (n-2) \\times \\ldots \\times 1",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 2,
+      "title": "Evaluate 8! and 4! - 3!",
+      "duration_seconds": 8,
+      "narration": "To evaluate 8!, we multiply all integers from 1 to 8. For 4! - 3!, we first calculate 4! and 3!, then subtract the results.",
+      "animation_description": "The formula 8! = 8 \u00d7 7 \u00d7 6 \u00d7 5 \u00d7 4 \u00d7 3 \u00d7 2 \u00d7 1 fades in. The formula 4! - 3! = 24 - 6 = 18 appears below.",
+      "manim_hint": "Use MathTex to display the results of the calculations.",
+      "reveals_formula": true,
+      "math_overlay": "8! = 8 \\times 7 \\times 6 \\times 5 \\times 4 \\times 3 \\times 2 \\times 1 = 40320",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 3,
+      "title": "Check if 3! + 4! = 7!",
+      "duration_seconds": 8,
+      "narration": "Let's check if the sum of 3! and 4! equals 7!.",
+      "animation_description": "The formula 3! + 4! = 6 + 24 = 30 appears on the screen. An arrow points to the result.",
+      "manim_hint": "Use MathTex to display the result of the calculation.",
+      "reveals_formula": true,
+      "math_overlay": "3! + 4! = 6 + 24 = 30",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 4,
+      "title": "Solve for x",
+      "duration_seconds": 8,
+      "narration": "Given the equation 6! \u00d7 2! = 7! \u00f7 x, let's solve for x.",
+      "animation_description": "The equation 6! \u00d7 2! = 7! \u00f7 x fades in. The formula x = 7! \u00f7 (6! \u00d7 2!) appears below.",
+      "manim_hint": "Use MathTex to display the solution.",
+      "reveals_formula": true,
+      "math_overlay": "x = \\frac{7!}{6! \\times 2!}",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 5,
+      "title": "Evaluate n! / (n-r)! for n=6, r=2",
+      "duration_seconds": 8,
+      "narration": "Let's evaluate n! / (n-r)! for n=6 and r=2.",
+      "animation_description": "The formula n! / (n-r)! = 6! / (6-2)! = 6! / 4! fades in. The result 6! / 4! = 15 appears below.",
+      "manim_hint": "Use MathTex to display the result of the calculation.",
+      "reveals_formula": true,
+      "math_overlay": "6! / (6-2)! = 6! / 4! = 15",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 6,
+      "title": "Evaluate n! / (n-r)! for n=9, r=5",
+      "duration_seconds": 8,
+      "narration": "Let's evaluate n! / (n-r)! for n=9 and r=5.",
+      "animation_description": "The formula n! / (n-r)! = 9! / (9-5)! = 9! / 4! fades in. The result 9! / 4! = 126 appears below.",
+      "manim_hint": "Use MathTex to display the result of the calculation.",
+      "reveals_formula": true,
+      "math_overlay": "9! / (9-5)! = 9! / 4! = 126",
+      "shot_type": "journey"
+    },
+    {
+      "scene_number": 7,
+      "title": "Recap",
+      "duration_seconds": 8,
+      "narration": "In this video, we learned how to evaluate factorials, solve equations involving factorials, and use the formula n! / (n-r)! to find the number of permutations.",
+      "animation_description": "A recap slide appears with key formulas and concepts. Text labels explain each formula.",
+      "manim_hint": "Use MathTex to display the key formulas and text labels.",
+      "reveals_formula": true,
+      "math_overlay": null,
+      "shot_type": "recap"
+    }
+  ]
+}
