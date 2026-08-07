@@ -12,6 +12,34 @@ from storyboard.planner import generate_storyboard
 from storyboard.schemas import Storyboard
 from manim_gen.generator import generate_manim_script
 
+try:
+    from huggingface_hub import hf_hub_download
+except ImportError:
+    hf_hub_download = None
+
+def get_or_download_model(model_path: str = None) -> str:
+    if model_path and os.path.exists(model_path):
+        return model_path
+    
+    if hf_hub_download is None:
+        raise ImportError("huggingface_hub is required to auto-download models. pip install huggingface_hub")
+        
+    print("Model not found or not provided. Downloading default Qwen2.5-7B GGUF model...")
+    repo_id = "Qwen/Qwen2.5-7B-Instruct-GGUF"
+    filename = "qwen2.5-7b-instruct-q4_k_m.gguf"
+    
+    download_dir = "/content/models" if os.path.exists("/content") else "./models"
+    os.makedirs(download_dir, exist_ok=True)
+    
+    downloaded_path = hf_hub_download(
+        repo_id=repo_id, 
+        filename=filename, 
+        local_dir=download_dir,
+        local_dir_use_symlinks=False
+    )
+    print(f"Model downloaded to: {downloaded_path}")
+    return downloaded_path
+
 
 def sanitize_filename(name: str) -> str:
     return "".join(c if c.isalnum() else "_" for c in name)[:30].strip("_")
@@ -46,7 +74,7 @@ def stitch_videos(video_paths: list[str], output_path: str):
         os.remove(concat_file)
 
 
-def run_pipeline(pdf_path: str, model_path: str):
+def run_pipeline(pdf_path: str, model_path: str = None):
     base_dir = Path("data")
     storyboard_dir = base_dir / "outputs" / "storyboards"
     script_dir = base_dir / "outputs" / "scripts"
@@ -71,8 +99,9 @@ def run_pipeline(pdf_path: str, model_path: str):
     def get_client():
         nonlocal client
         if client is None:
-            print(f"\nLoading Model from: {model_path} (Offloading some layers to GPU)")
-            client = LocalLLMClient(model_path=model_path, n_gpu_layers=20) # 20 is safe for 4GB VRAM
+            actual_model_path = get_or_download_model(model_path)
+            print(f"\nLoading Model from: {actual_model_path} (Offloading all layers to GPU for Colab T4)")
+            client = LocalLLMClient(model_path=actual_model_path, n_gpu_layers=-1) # -1 is best for Colab T4 (16GB VRAM)
         return client
 
     # 2. Iterate through concepts
@@ -151,9 +180,9 @@ def run_pipeline(pdf_path: str, model_path: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run CTC End-to-End Pipeline")
+    parser = argparse.ArgumentParser(description="Run CTC End-to-End Pipeline on Colab")
     parser.add_argument("--pdf", type=str, required=True, help="Path to input PDF")
-    parser.add_argument("--model", type=str, required=True, help="Path to local .gguf model")
+    parser.add_argument("--model", type=str, required=False, default=None, help="Path to local .gguf model (optional, will download if not provided)")
     
     args = parser.parse_args()
     run_pipeline(args.pdf, args.model)
