@@ -118,7 +118,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     if missing_storyboards:
         sb_model_path = get_or_download_model(STORYBOARD_REPO, STORYBOARD_FILE)
         print(f"\nLoading Storyboard Model: {sb_model_path}")
-        client = LocalLLMClient(model_path=sb_model_path, n_gpu_layers=-1)
+        client = LocalLLMClient(model_path=sb_model_path, n_gpu_layers=-1, n_ctx=4096)
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
@@ -157,7 +157,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     if missing_scripts:
         code_model_path = get_or_download_model(CODE_REPO, CODE_FILE)
         print(f"\nLoading Code Model: {code_model_path}")
-        client = LocalLLMClient(model_path=code_model_path, n_gpu_layers=-1)
+        client = LocalLLMClient(model_path=code_model_path, n_gpu_layers=-1, n_ctx=4096)
         
         for storyboard, script_file in missing_scripts:
             print(f"  [Task] Generating Manim Script for: {script_file.stem}...")
