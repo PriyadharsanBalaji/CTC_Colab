@@ -118,7 +118,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     if missing_storyboards:
         sb_model_path = get_or_download_model(STORYBOARD_REPO, STORYBOARD_FILE)
         print(f"\nLoading Storyboard Model: {sb_model_path}")
-        client = LocalLLMClient(model_path=sb_model_path, n_gpu_layers=-1, n_ctx=4096)
+        client = LocalLLMClient(model_path=sb_model_path, n_gpu_layers=-1, n_ctx=8192)
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
