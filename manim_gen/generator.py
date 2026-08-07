@@ -34,6 +34,7 @@ REQUIREMENTS:
    - You MUST call `self.play(FadeOut(*self.mobjects))` at the very end of EVERY scene. The screen must be completely blank before the next scene begins.
    - Do NOT use absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen. Center items using `.move_to(ORIGIN)` or position them relative to others.
    - Scale down large equations using `.scale(0.7)`.
+   - Never re-use the exact same Mobject instance multiple times in a loop. If you need multiple identical objects, you MUST instantiate them inside the loop (e.g. `times = MathTex("\\times")` inside the loop).
 8. Do NOT include `self.play(Wait(...))` endlessly, just animate the actions and pause briefly between scenes.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.
 """
@@ -119,5 +120,8 @@ FadeOut = SafeFadeOut
     # Remove any existing standard imports to prevent duplication
     code = code.replace("from manim import *", "").strip()
     code = header + code
+    
+    # Fix common LLM hallucination for VGroup arrange
+    code = code.replace("spacing=", "buff=")
         
     return code
