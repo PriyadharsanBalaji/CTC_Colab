@@ -17,12 +17,12 @@ Source Material Context:
 
 Requirements:
 1. Break down the concept into multiple sequential scenes.
-2. EACH SCENE must be exactly 8 seconds long. However, 8 seconds is a long time in animation! You must pack at least 2-3 distinct, meaningful mathematical steps, transitions, or text reveals into EVERY 8-second scene. Combine simple logical steps (e.g., "Choose Pant, then Choose Shirt") into a SINGLE scene. Do not drag out simple equations.
-3. The `visual_setting` must be Manim-Native: Use a clean, dark background focusing exclusively on mathematical notation (LaTeX), geometric primitives (Circles, Rectangles, Arrows), and clean text labels. DO NOT design complex real-world visual metaphors.
-4. ABSTRACTION RULE (CRITICAL): If the text uses real-world examples (e.g., pants, shirts, cars, locks), you MUST abstract them. Manim cannot draw physical objects. Represent them as mathematical sets (e.g., $S = \\{{s_1, s_2\\}}$), nodes, color-coded geometric shapes, or simple text labels. Keep the visuals strictly abstract and mathematical.
-5. Provide a `narration` (voiceover) and `animation_description` (what is visually happening, e.g., "A formula fades in, then an arrow points to the variable x") for each scene.
-6. In later scenes, reveal the formula (if applicable) and use `math_overlay` to show the LaTeX math.
-7. The final scene should recap the concept.
+2. SIMPLICITY IS CRITICAL: This storyboard will be coded by an AI using Manim. If you ask for complex diagrams, physical objects, or 3D rotations, the code will fail! Keep every scene EXTREMELY simple.
+3. Limit each scene to ONE major action (e.g., reveal a single equation, OR show a single definition, OR draw a simple circle). Do NOT pack multiple steps into one scene.
+4. The `visual_setting` must be strictly basic Manim objects: `Text`, `MathTex`, `Circle`, `Rectangle`, and `Arrow`. DO NOT design real-world visual metaphors.
+5. Provide a `narration` (voiceover) and a very simple `animation_description` (e.g., "A formula fades in on screen").
+6. Use `math_overlay` to show the LaTeX math when applicable. Keep LaTeX very simple and standard.
+7. The final scene should recap the concept using basic bullet points (`Text`).
 
 Output the result strictly matching the provided JSON schema.
 """
