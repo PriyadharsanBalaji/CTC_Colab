@@ -41,13 +41,18 @@ REQUIREMENTS:
 """
 
 def extract_python_code(llm_response: str) -> str:
-    """Extracts Python code from a markdown block."""
-    match = re.search(r"```python\n(.*?)\n```", llm_response, re.DOTALL)
+    """Extracts Python code from a markdown block, ignoring <think> blocks."""
+    match = re.search(r"```python\s+(.*?)\s+```", llm_response, re.DOTALL)
     if match:
         return match.group(1).strip()
     
-    # Fallback if no markdown block is used
-    return llm_response.strip()
+    match2 = re.search(r"```\s+(.*?)\s+```", llm_response, re.DOTALL)
+    if match2:
+        return match2.group(1).strip()
+        
+    # Fallback if no markdown block is used, but strip <think> first
+    text_no_think = re.sub(r"<think>.*?</think>", "", llm_response, flags=re.DOTALL)
+    return text_no_think.strip()
 
 def generate_manim_script(client: LocalLLMClient, storyboard: Storyboard) -> str:
     """Generates the Manim python script string."""
@@ -60,7 +65,7 @@ def generate_manim_script(client: LocalLLMClient, storyboard: Storyboard) -> str
     formatted_prompt = (
         f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
         f"<|im_start|>user\n{prompt}<|im_end|>\n"
-        f"<|im_start|>assistant\n```python\n"
+        f"<|im_start|>assistant\n"
     )
     
     print("[LLM] Generating Manim Script (this might take a minute)...")
@@ -68,11 +73,11 @@ def generate_manim_script(client: LocalLLMClient, storyboard: Storyboard) -> str
         formatted_prompt,
         max_tokens=4096,
         temperature=0.2, # Low temp for code
-        stop=["```\n<|im_end|>", "<|im_end|>"],
+        stop=["<|im_end|>"],
         echo=False
     )
     
-    raw_text = "```python\n" + response['choices'][0]['text']
+    raw_text = response['choices'][0]['text']
     code = extract_python_code(raw_text)
     
     # Safety net: If the LLM still tries to use ImageMobject, replace it with a Text placeholder
