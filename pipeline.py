@@ -24,9 +24,9 @@ def get_or_download_model(model_path: str = None) -> str:
     if hf_hub_download is None:
         raise ImportError("huggingface_hub is required to auto-download models. pip install huggingface_hub")
         
-    print("Model not found or not provided. Downloading default Qwen2.5-7B GGUF model...")
-    repo_id = "Qwen/Qwen2.5-7B-Instruct-GGUF"
-    filename = "qwen2.5-7b-instruct-q4_k_m.gguf"
+    print("Model not found or not provided. Downloading Qwen2.5 Coder 7B GGUF model...")
+    repo_id = "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
+    filename = "qwen2.5-coder-7b-instruct-q4_k_m.gguf"
     
     download_dir = "/content/models" if os.path.exists("/content") else "./models"
     os.makedirs(download_dir, exist_ok=True)
