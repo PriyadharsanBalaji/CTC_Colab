@@ -33,6 +33,9 @@ REQUIREMENTS:
    - You MUST ensure text and formulas NEVER overlap on screen. If you are animating multiple elements sequentially, you MUST shift new elements appropriately (e.g., `new_obj.next_to(old_obj, DOWN, buff=0.5)`) or group them using `VGroup(*objects).arrange(DOWN).move_to(ORIGIN)`.
    - You MUST call `self.play(FadeOut(*self.mobjects))` at the very end of EVERY scene. The screen must be completely blank before the next scene begins.
    - Do NOT use absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen. Center items using `.move_to(ORIGIN)` or position them relative to others.
+   - Manim coordinates are 3D numpy arrays! Never add a 2D tuple to `ORIGIN`. You must use 3D vectors: e.g., `ORIGIN + np.array([x, y, 0])` or `ORIGIN + RIGHT * x + UP * y`.
+   - Mobjects do NOT take `x` or `y` parameters in their constructors. Do NOT do `Rectangle(x=2)`. Instantiate first, then move: `Rectangle().shift(RIGHT * 2)`.
+   - When using `.arrange_in_grid()`, specify ONLY `rows=` or ONLY `cols=` to let Manim auto-calculate the other dimension.
    - Scale down large equations using `.scale(0.7)`.
    - Never re-use the exact same Mobject instance multiple times in a loop. If you need multiple identical objects, you MUST instantiate them inside the loop (e.g. `times = MathTex("\\times")` inside the loop).
    - DO NOT call hallucinated custom helper functions (like `highlight_column()`). You must write all animation logic explicitly inline.
