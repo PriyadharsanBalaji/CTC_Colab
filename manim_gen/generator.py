@@ -35,6 +35,7 @@ REQUIREMENTS:
    - Do NOT use absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen. Center items using `.move_to(ORIGIN)` or position them relative to others.
    - Scale down large equations using `.scale(0.7)`.
    - Never re-use the exact same Mobject instance multiple times in a loop. If you need multiple identical objects, you MUST instantiate them inside the loop (e.g. `times = MathTex("\\times")` inside the loop).
+   - DO NOT call hallucinated custom helper functions (like `highlight_column()`). You must write all animation logic explicitly inline.
 8. Do NOT include `self.play(Wait(...))` endlessly, just animate the actions and pause briefly between scenes.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.
 """
