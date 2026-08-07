@@ -29,10 +29,10 @@ REQUIREMENTS:
    - Never instantiate a raw `Mobject()`. Use `VMobject()`, `VGroup()`, or specific geometric shapes.
    - Do NOT use hallucinated classes like `Grid`, `Box`, `Point`. ONLY use standard classes: `Circle`, `Rectangle`, `Line`, `Arrow`, `NumberPlane`, `Text`, `MathTex`, and `VGroup`.
    - Do NOT pass Python lists directly into animations like `Create(my_list)`. You MUST unpack them or use a VGroup: e.g., `Create(VGroup(*my_list))` or `self.play(*[Create(obj) for obj in my_list])`.
-7. SPATIAL AWARENESS & SCREEN CLEARING (CRITICAL):
+7. SPATIAL AWARENESS & PREVENTING OVERLAP (CRITICAL):
+   - You MUST ensure text and formulas NEVER overlap on screen. If you are animating multiple elements sequentially, you MUST shift new elements appropriately (e.g., `new_obj.next_to(old_obj, DOWN, buff=0.5)`) or group them using `VGroup(*objects).arrange(DOWN).move_to(ORIGIN)`.
    - You MUST call `self.play(FadeOut(*self.mobjects))` at the very end of EVERY scene. The screen must be completely blank before the next scene begins.
-   - Do NOT use `.to_edge(RIGHT)`, `.to_edge(LEFT)`, or absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen.
-   - Instead, you MUST group related text/math using `VGroup(text1, text2).arrange(DOWN).move_to(ORIGIN)` so that everything is perfectly centered in the middle of the screen.
+   - Do NOT use absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen. Center items using `.move_to(ORIGIN)` or position them relative to others.
    - Scale down large equations using `.scale(0.7)`.
 8. Do NOT include `self.play(Wait(...))` endlessly, just animate the actions and pause briefly between scenes.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.

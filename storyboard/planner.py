@@ -17,9 +17,9 @@ Source Material Context:
 
 Requirements:
 1. Break down the concept into multiple sequential scenes.
-2. SIMPLICITY IS CRITICAL: This storyboard will be coded by an AI using Manim. If you ask for complex diagrams, physical objects, or 3D rotations, the code will fail! Keep every scene EXTREMELY simple.
-3. Limit each scene to ONE major action (e.g., reveal a single equation, OR show a single definition, OR draw a simple circle). Do NOT pack multiple steps into one scene.
-4. The `visual_setting` must be strictly basic Manim objects: `Text`, `MathTex`, `Circle`, `Rectangle`, and `Arrow`. DO NOT design real-world visual metaphors.
+2. SIMPLICITY IS CRITICAL: This storyboard will be coded by an AI using Manim. Do NOT ask for complex real-world objects (like drawing a lock, a car, or complex machinery). Instead, use simple abstractions like a rectangle divided into columns, simple text lists, or basic geometric shapes.
+3. You may include 2 to 3 logical actions in a scene, but they must be simple and doable in Manim (e.g., revealing a grid of squares, then filling a column, then writing an equation).
+4. The `visual_setting` must be strictly basic Manim objects: `Text`, `MathTex`, `Circle`, `Rectangle`, `Square`, `Line`, and `Arrow`.
 5. Provide a `narration` (voiceover) and a very simple `animation_description` (e.g., "A formula fades in on screen").
 6. Use `math_overlay` to show the LaTeX math when applicable. Keep LaTeX very simple and standard.
 7. The final scene should recap the concept using basic bullet points (`Text`).
