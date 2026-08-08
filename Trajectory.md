@@ -1,9 +1,11 @@
 # Project Trajectory: Concept-To-Canvas (CTC) Manim Video Generation
 
 ## **Project Overview & Objective**
-**Concept-To-Canvas (CTC)** is a fully autonomous, offline AI pipeline designed to democratize high-quality mathematical education. Its core objective is to ingest raw, static textbook material (e.g., NCERT educational PDFs) and transform it into highly engaging, curriculum-aligned mathematical video animations using the **Manim** engine—all without requiring human intervention or expensive API calls.
+**Concept-To-Canvas (CTC)** is a fully autonomous, offline AI pipeline designed to democratize high-quality mathematical education. The core inspiration for this project is to automatically generate **"3Blue1Brown-style"** video animations—known for their stunning, intuitive visual math explanations—directly from raw, static textbook material (e.g., NCERT educational PDFs). 
 
-To achieve this, the pipeline runs entirely locally (or on free-tier cloud environments like Google Colab) using heavily quantized, open-weights Large Language Models (LLMs) to perform complex zero-shot reasoning. It acts as both a master curriculum designer (planning the pedagogy) and an expert Python animator (writing the spatial graphics code).
+By leveraging the powerful **Manim** graphics engine (the exact same engine created and used by 3Blue1Brown), CTC aims to scale this elite tier of visual education to every concept in a textbook, all without requiring expensive human intervention or costly API calls.
+
+To achieve this, the pipeline runs entirely locally (or on free-tier cloud environments like Google Colab) using heavily quantized, open-weights Large Language Models (LLMs) to perform complex zero-shot reasoning. The AI acts as both a master curriculum designer (planning the pedagogical narrative) and an expert Python animator (writing the Manim code).
 
 This document tracks the evolution of the CTC Colab pipeline, detailing the architectural shifts, the problems encountered with zero-shot AI generation, and the solutions implemented to resolve them.
 
