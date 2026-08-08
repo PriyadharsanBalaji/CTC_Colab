@@ -12,7 +12,7 @@ def build_manim_prompt(storyboard: Storyboard) -> str:
     storyboard_json = storyboard.model_dump_json(indent=2)
     
     return f"""You are an expert Manim (Python) animator.
-I have a storyboard for an educational video.
+I have a highly detailed educational storyboard for a mathematical animation.
 
 STORYBOARD JSON:
 {storyboard_json}
@@ -20,8 +20,8 @@ STORYBOARD JSON:
 REQUIREMENTS:
 1. Write a complete, runnable Python script using the Manim library.
 2. The script must contain a single class `ConceptScene(Scene)`.
-3. Animate the single continuous scene described in the storyboard. Do not clear the screen, just build it fluidly.
-4. Implement the `math_overlay` (using `MathTex`) exactly as specified.
+3. You must read the `timeline` array from the JSON and animate the events in sequence.
+4. Pay very close attention to the `conceptual_objects` and `visual_state` definitions. Only show on screen what is listed in `visual_state.visible`.
 5. Do NOT use `ImageMobject`, `SVGMobject`, or any external files. Use built-in Manim shapes (Circle, Rectangle, Polygon) or `Text`/`MathTex`.
 6. STRICT MANIM RULES to prevent crashes:
    - Do NOT use `MoveToTarget`. Use `self.play(Transform(obj1, obj2))` or `self.play(obj.animate.shift(RIGHT))`.
@@ -37,7 +37,8 @@ REQUIREMENTS:
    - Mobjects do NOT take `x` or `y` parameters in their constructors. Do NOT do `Rectangle(x=2)`.
    - When using `.arrange_in_grid()`, specify ONLY `rows=` or ONLY `cols=` to let Manim auto-calculate the other dimension.
 8. PREMIUM ANIMATIONS:
-   - Do NOT just use `Create()` for everything. Use engaging, child-friendly animations like `Write()` for Text, `GrowFromCenter()` for shapes, and `TransformMatchingTex()` for math formulas.
+   - Make the visuals match the `global_visual_language` defined in the JSON.
+   - Do NOT just use `Create()` for everything. Use engaging animations like `Write()` for Text, `GrowFromCenter()` for shapes, and `TransformMatchingTex()` for math formulas.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.
 """
 
