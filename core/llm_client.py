@@ -28,9 +28,9 @@ class LocalLLMClient:
         )
         print("Model loaded successfully.")
 
-    def generate_json(self, prompt: str, schema_model: type[BaseModel]) -> dict:
+    def generate_json(self, prompt: str, schema_model: type[BaseModel], max_retries: int = 3) -> dict:
         """
-        Generates structured JSON following the provided Pydantic schema.
+        Generates structured JSON following the provided Pydantic schema, with auto-retry.
         """
         
         system_prompt = (
@@ -40,7 +40,6 @@ class LocalLLMClient:
         
         schema_str = json.dumps(schema_model.model_json_schema(), indent=2)
         
-        # Qwen ChatML template
         formatted_prompt = (
             f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
             f"<|im_start|>user\n{prompt}\n\n"
@@ -49,31 +48,37 @@ class LocalLLMClient:
             f"<|im_start|>assistant\n```json\n"
         )
 
-        print("[LLM] Generating storyboard (this might take a minute)...")
-        response = self.llm(
-            formatted_prompt,
-            max_tokens=-1,
-            temperature=0.4,
-            stop=["```\n<|im_end|>", "<|im_end|>"],
-            echo=False
-        )
-        
-        raw_text = "```json\n" + response['choices'][0]['text']
-        
-        import re
-        match = re.search(r"```json\n(.*?)\n```", raw_text, re.DOTALL)
-        if match:
-            text = match.group(1).strip()
-        else:
-            text = raw_text.replace("```json", "").replace("```", "").strip()
+        for attempt in range(max_retries):
+            print(f"[LLM] Generating storyboard (Attempt {attempt + 1}/{max_retries})...")
+            response = self.llm(
+                formatted_prompt,
+                max_tokens=-1,
+                temperature=0.4,
+                stop=["```\n<|im_end|>", "<|im_end|>"],
+                echo=False
+            )
             
-        try:
-            return json.loads(text)
-        except json.JSONDecodeError as e:
-            print(f"[Error] Failed to parse JSON from LLM: \n{text}")
+            raw_text = "```json\n" + response['choices'][0]['text']
+            
+            import re
+            match = re.search(r"```json\n(.*?)\n```", raw_text, re.DOTALL)
+            if match:
+                text = match.group(1).strip()
+            else:
+                text = raw_text.replace("```json", "").replace("```", "").strip()
+                
             try:
-                if not text.endswith("}"):
-                    text += "}"
                 return json.loads(text)
-            except:
-                raise e
+            except json.JSONDecodeError as e:
+                print(f"[Error] Failed to parse JSON on attempt {attempt + 1}.")
+                # Simple auto-fix for missing brackets
+                try:
+                    if not text.endswith("}"):
+                        text += "}"
+                    return json.loads(text)
+                except:
+                    if attempt == max_retries - 1:
+                        print(f"[Fatal] Failed to parse JSON after {max_retries} attempts. Last output:\n{text}")
+                        raise e
+                    print("[Retry] Retrying generation to fix JSON syntax...")
+                    continue
