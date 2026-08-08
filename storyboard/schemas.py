@@ -1,6 +1,6 @@
 """Pydantic models for the PDF-to-Manim storyboard pipeline (Advanced V3)."""
 
-from typing import Optional, List, Dict, Union
+from typing import Optional, List, Dict, Union, Any
 from pydantic import BaseModel, Field
 
 class Metadata(BaseModel):
@@ -11,11 +11,11 @@ class Metadata(BaseModel):
     target_duration_seconds: int = Field(default=30)
     learning_objective: str
     difficulty: str
-    prerequisite_knowledge: List[str]
+    prerequisite_knowledge: Any
 
 class EducationalStrategy(BaseModel):
     core_idea: str
-    teaching_progression: List[str]
+    teaching_progression: Any
     misconception_to_address: str
     visual_teaching_principle: str
 
@@ -38,21 +38,21 @@ class ConceptualObject(BaseModel):
     id: str
     type: str
     semantic_role: str
-    content: Union[str, int, float, List[str], List[int], List[float]]
+    content: Any
     meaning: str
 
 class Story(BaseModel):
-    narrative_arc: List[str]
+    narrative_arc: Any
 
 class TimeRange(BaseModel):
     start: int
     end: int
 
 class VisualState(BaseModel):
-    visible: List[str] = []
-    hidden: List[str] = []
-    emphasis: List[str] = []
-    previous_visual: Optional[Union[str, List[str]]] = None
+    visible: Any = []
+    hidden: Any = []
+    emphasis: Any = []
+    previous_visual: Any = None
 
 class VisualAction(BaseModel):
     type: str
@@ -70,13 +70,13 @@ class TimelineEvent(BaseModel):
     visual_action: VisualAction
     mathematical_meaning: Optional[str] = None
     transition: Optional[Transition] = None
-    mathematical_mapping: Optional[Dict[str, Union[int, str]]] = None
+    mathematical_mapping: Optional[Dict[str, Any]] = None
     mathematical_content: Optional[Dict[str, str]] = None
     student_should_notice: str
 
 class Transitions(BaseModel):
-    preferred: List[str]
-    avoid: List[str]
+    preferred: Any
+    avoid: Any
 
 class NarrationVisualAlignment(BaseModel):
     concept: str
@@ -84,7 +84,7 @@ class NarrationVisualAlignment(BaseModel):
 
 class MathematicalConstraints(BaseModel):
     must_be_correct: bool = True
-    expressions: List[str]
+    expressions: Any
     important_distinction: Optional[str] = None
 
 class GenerationConstraints(BaseModel):
@@ -106,11 +106,11 @@ class Storyboard(BaseModel):
     metadata: Metadata
     educational_strategy: EducationalStrategy
     global_visual_language: GlobalVisualLanguage
-    conceptual_objects: List[ConceptualObject]
+    conceptual_objects: Any
     story: Story
     timeline: List[TimelineEvent]
     transitions: Transitions
-    narration_visual_alignment: List[NarrationVisualAlignment]
+    narration_visual_alignment: Any
     mathematical_constraints: MathematicalConstraints
     generation_constraints: GenerationConstraints
     final_state: FinalState
