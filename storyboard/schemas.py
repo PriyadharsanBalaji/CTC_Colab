@@ -52,7 +52,7 @@ class VisualState(BaseModel):
     visible: List[str] = []
     hidden: List[str] = []
     emphasis: List[str] = []
-    previous_visual: Optional[str] = None
+    previous_visual: Optional[Union[str, List[str]]] = None
 
 class VisualAction(BaseModel):
     type: str
