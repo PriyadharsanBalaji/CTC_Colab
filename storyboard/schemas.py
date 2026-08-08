@@ -38,7 +38,7 @@ class ConceptualObject(BaseModel):
     id: str
     type: str
     semantic_role: str
-    content: Union[str, List[str]]
+    content: Union[str, int, float, List[str], List[int], List[float]]
     meaning: str
 
 class Story(BaseModel):
