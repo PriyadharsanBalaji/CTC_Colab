@@ -73,7 +73,7 @@ def generate_manim_script(client: LocalLLMClient, storyboard: Storyboard) -> str
     print("[LLM] Generating Manim Script (this might take a minute)...")
     response = client.llm(
         formatted_prompt,
-        max_tokens=4096,
+        max_tokens=-1,
         temperature=0.2, # Low temp for code
         stop=["<|im_end|>"],
         echo=False

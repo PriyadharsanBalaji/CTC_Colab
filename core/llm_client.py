@@ -52,7 +52,7 @@ class LocalLLMClient:
         print("[LLM] Generating storyboard (this might take a minute)...")
         response = self.llm(
             formatted_prompt,
-            max_tokens=4096,
+            max_tokens=-1,
             temperature=0.4,
             stop=["```\n<|im_end|>", "<|im_end|>"],
             echo=False
