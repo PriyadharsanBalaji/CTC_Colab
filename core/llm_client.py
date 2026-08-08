@@ -52,7 +52,7 @@ class LocalLLMClient:
             print(f"[LLM] Generating storyboard (Attempt {attempt + 1}/{max_retries})...")
             response = self.llm(
                 formatted_prompt,
-                max_tokens=-1,
+                max_tokens=4096,
                 temperature=0.4,
                 stop=["```\n<|im_end|>", "<|im_end|>"],
                 echo=False
