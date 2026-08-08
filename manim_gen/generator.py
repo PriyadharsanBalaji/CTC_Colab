@@ -20,26 +20,24 @@ STORYBOARD JSON:
 REQUIREMENTS:
 1. Write a complete, runnable Python script using the Manim library.
 2. The script must contain a single class `ConceptScene(Scene)`.
-3. Animate the scenes described in the storyboard sequentially within this single class.
-4. Implement the `math_overlay` (using `MathTex`) exactly as specified when `reveals_formula` is true.
-5. Do NOT use `ImageMobject`, `SVGMobject`, or any external files (no .png, .jpg, .svg). You must draw everything using built-in Manim shapes (Circle, Rectangle, Polygon) or represent them with `Text` or `MathTex`.
+3. Animate the single continuous scene described in the storyboard. Do not clear the screen, just build it fluidly.
+4. Implement the `math_overlay` (using `MathTex`) exactly as specified.
+5. Do NOT use `ImageMobject`, `SVGMobject`, or any external files. Use built-in Manim shapes (Circle, Rectangle, Polygon) or `Text`/`MathTex`.
 6. STRICT MANIM RULES to prevent crashes:
-   - Do NOT use `MoveToTarget`. If you need to move/change an object, use `self.play(Transform(obj1, obj2))` or `self.play(obj.animate.shift(RIGHT))`.
+   - Do NOT use `MoveToTarget`. Use `self.play(Transform(obj1, obj2))` or `self.play(obj.animate.shift(RIGHT))`.
    - Use `VGroup` instead of `Group`.
    - Never instantiate a raw `Mobject()`. Use `VMobject()`, `VGroup()`, or specific geometric shapes.
-   - Do NOT use hallucinated classes like `Grid`, `Box`, `Point`. ONLY use standard classes: `Circle`, `Rectangle`, `Line`, `Arrow`, `NumberPlane`, `Text`, `MathTex`, and `VGroup`.
-   - Do NOT pass Python lists directly into animations like `Create(my_list)`. You MUST unpack them or use a VGroup: e.g., `Create(VGroup(*my_list))` or `self.play(*[Create(obj) for obj in my_list])`.
-7. SPATIAL AWARENESS & PREVENTING OVERLAP (CRITICAL):
-   - You MUST ensure text and formulas NEVER overlap on screen. If you are animating multiple elements sequentially, you MUST shift new elements appropriately (e.g., `new_obj.next_to(old_obj, DOWN, buff=0.5)`) or group them using `VGroup(*objects).arrange(DOWN).move_to(ORIGIN)`.
-   - You MUST call `self.play(FadeOut(*self.mobjects))` at the very end of EVERY scene. The screen must be completely blank before the next scene begins.
+   - Do NOT pass Python lists directly into animations like `Create(my_list)`. You MUST unpack them: e.g., `self.play(*[Create(obj) for obj in my_list])`.
+7. BOUNDARY ENFORCEMENT & ANTI-OVERLAP (CRITICAL):
+   - You MUST ensure text and formulas NEVER overlap on screen.
+   - You MUST group elements into a `VGroup` and use `.arrange(DOWN, buff=0.5)` to mathematically guarantee they do not overlap.
+   - After arranging a group, you MUST scale it to fit within the screen boundaries. ALWAYS do: `if my_group.width > config.frame_width - 1: my_group.scale_to_fit_width(config.frame_width - 1)`
    - Do NOT use absolute coordinates like `.move_to([4, 2, 0])` which push things off-screen. Center items using `.move_to(ORIGIN)` or position them relative to others.
-   - Manim coordinates are 3D numpy arrays! Never add a 2D tuple to `ORIGIN`. You must use 3D vectors: e.g., `ORIGIN + np.array([x, y, 0])` or `ORIGIN + RIGHT * x + UP * y`.
-   - Mobjects do NOT take `x` or `y` parameters in their constructors. Do NOT do `Rectangle(x=2)`. Instantiate first, then move: `Rectangle().shift(RIGHT * 2)`.
+   - Manim coordinates are 3D! Never add a 2D tuple to `ORIGIN`. Use 3D vectors: e.g., `ORIGIN + RIGHT * x + UP * y`.
+   - Mobjects do NOT take `x` or `y` parameters in their constructors. Do NOT do `Rectangle(x=2)`.
    - When using `.arrange_in_grid()`, specify ONLY `rows=` or ONLY `cols=` to let Manim auto-calculate the other dimension.
-   - Scale down large equations using `.scale(0.7)`.
-   - Never re-use the exact same Mobject instance multiple times in a loop. If you need multiple identical objects, you MUST instantiate them inside the loop (e.g. `times = MathTex("\\times")` inside the loop).
-   - DO NOT call hallucinated custom helper functions (like `highlight_column()`). You must write all animation logic explicitly inline.
-8. Do NOT include `self.play(Wait(...))` endlessly, just animate the actions and pause briefly between scenes.
+8. PREMIUM ANIMATIONS:
+   - Do NOT just use `Create()` for everything. Use engaging, child-friendly animations like `Write()` for Text, `GrowFromCenter()` for shapes, and `TransformMatchingTex()` for math formulas.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.
 """
 
