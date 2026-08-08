@@ -1,5 +1,10 @@
 # Project Trajectory: Concept-To-Canvas (CTC) Manim Video Generation
 
+## **Project Overview & Objective**
+**Concept-To-Canvas (CTC)** is a fully autonomous, offline AI pipeline designed to democratize high-quality mathematical education. Its core objective is to ingest raw, static textbook material (e.g., NCERT educational PDFs) and transform it into highly engaging, curriculum-aligned mathematical video animations using the **Manim** engine—all without requiring human intervention or expensive API calls.
+
+To achieve this, the pipeline runs entirely locally (or on free-tier cloud environments like Google Colab) using heavily quantized, open-weights Large Language Models (LLMs) to perform complex zero-shot reasoning. It acts as both a master curriculum designer (planning the pedagogy) and an expert Python animator (writing the spatial graphics code).
+
 This document tracks the evolution of the CTC Colab pipeline, detailing the architectural shifts, the problems encountered with zero-shot AI generation, and the solutions implemented to resolve them.
 
 ---
