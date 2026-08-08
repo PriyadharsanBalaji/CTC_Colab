@@ -8,11 +8,10 @@ from storyboard.schemas import Storyboard
 def build_manim_prompt(storyboard: Storyboard) -> str:
     """Creates the prompt to generate a Manim Python script from the storyboard."""
     
-    # We serialize the storyboard object to pass into the prompt
     storyboard_json = storyboard.model_dump_json(indent=2)
     
     return f"""You are an expert Manim (Python) animator.
-I have a highly detailed educational storyboard for a mathematical animation.
+I have a highly detailed continuous storyboard for a mathematical animation.
 
 STORYBOARD JSON:
 {storyboard_json}
@@ -20,8 +19,8 @@ STORYBOARD JSON:
 REQUIREMENTS:
 1. Write a complete, runnable Python script using the Manim library.
 2. The script must contain a single class `ConceptScene(Scene)`.
-3. You must read the `timeline` array from the JSON and animate the events in sequence.
-4. Pay very close attention to the `conceptual_objects` and `visual_state` definitions. Only show on screen what is listed in `visual_state.visible`.
+3. Read the `scenes` array from the JSON and animate the events in sequence. The storyboard is CONTINUOUS, meaning you should NOT use `self.clear()` between scenes unless explicitly instructed.
+4. Pay very close attention to the `visual_description` and `animation_instructions`.
 5. Do NOT use `ImageMobject`, `SVGMobject`, or any external files. Use built-in Manim shapes (Circle, Rectangle, Polygon) or `Text`/`MathTex`.
 6. STRICT MANIM RULES to prevent crashes:
    - Do NOT use `MoveToTarget`. Use `self.play(Transform(obj1, obj2))` or `self.play(obj.animate.shift(RIGHT))`.
@@ -37,7 +36,7 @@ REQUIREMENTS:
    - Mobjects do NOT take `x` or `y` parameters in their constructors. Do NOT do `Rectangle(x=2)`.
    - When using `.arrange_in_grid()`, specify ONLY `rows=` or ONLY `cols=` to let Manim auto-calculate the other dimension.
 8. PREMIUM ANIMATIONS:
-   - Make the visuals match the `global_visual_language` defined in the JSON.
+   - Make the visuals engaging.
    - Do NOT just use `Create()` for everything. Use engaging animations like `Write()` for Text, `GrowFromCenter()` for shapes, and `TransformMatchingTex()` for math formulas.
 9. Return ONLY the raw Python code inside a markdown code block ```python ... ``` without any surrounding explanations.
 """

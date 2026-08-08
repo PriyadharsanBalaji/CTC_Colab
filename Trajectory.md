@@ -74,6 +74,20 @@ This document tracks the evolution of the CTC Colab pipeline, detailing the arch
 
 ---
 
-### **Future Considerations (V4+)**
+### **Future Considerations**
 - **Error Recovery Loop:** If Manim crashes due to a syntax error, pass the Python traceback back to Codestral to auto-fix its own code.
-- **Voiceover TTS:** Integrate an open-source TTS model (like XTTS or Edge-TTS) to automatically read the `narration` track from the storyboard and sync it with the Manim timings.
+
+---
+
+## **Phase 4: The Simple Continuous Redesign (V4 - Current)**
+
+**Goal:** Fix the catastrophic failure rate of V3. The 14B model proved incapable of consistently outputting a 150+ line nested JSON structure without hallucinating syntax errors (e.g. missing commas, using `{}` inside an array). 
+
+**Architecture:**
+- Rollback to a highly simplified JSON structure (2 classes: `Scene` and `Storyboard`).
+- Enforce the V3 pedagogical continuity using **Prompt Engineering** rather than strict schema definition.
+
+**The Fixes Implemented in V4:**
+- **Simplified Schema (`schemas.py`):** Reduced the massive 10+ class schema down to a few string fields (`visual_description`, `animation_instructions`).
+- **Continuous Prompting (`planner.py`):** Explicitly instructed the LLM: "Your storyboard MUST be one continuous visual flow. Do not abruptly wipe the screen between scenes."
+- **Crash Prevention Continuity (`generator.py`):** Explicitly banned Codestral from using `self.clear()` unless explicitly instructed, forcing it to keep objects on screen and animate them continuously without recalculating layout grids from scratch.- **Voiceover TTS:** Integrate an open-source TTS model (like XTTS or Edge-TTS) to automatically read the `narration` track from the storyboard and sync it with the Manim timings.

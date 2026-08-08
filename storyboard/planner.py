@@ -1,4 +1,4 @@
-"""Storyboard planning prompt and generation logic (Advanced V3)."""
+"""Storyboard planning prompt and generation logic (Simplified V4)."""
 
 from core.llm_client import LocalLLMClient
 from core.parser import ConceptChunk
@@ -6,24 +6,22 @@ from storyboard.schemas import Storyboard
 
 
 def build_planner_prompt(concept: ConceptChunk) -> str:
-    """Creates the prompt to generate a highly structured advanced storyboard."""
+    """Creates the prompt to generate a simple but continuous storyboard."""
     
-    return f"""You are a master curriculum designer and mathematical animation director.
-We need to teach a specific mathematical concept extracted from an NCERT textbook using Manim (Python).
+    return f"""You are a master educational director and mathematical animation expert.
+We need to teach a specific mathematical concept extracted from a textbook using Manim (Python).
 
 Concept Title: {concept.title}
 Source Material Context:
 {concept.content}
 
-Requirements:
-1. You must act as a master educational director. Do NOT just dump a scene. You must map out the exact `educational_strategy`, `conceptual_objects`, and the precise `timeline` of events that will occur on screen.
-2. The `timeline` MUST be continuous. Visual state in one scene must carry over logically to the next.
-3. Every `conceptual_object` you define must be visually achievable using basic Manim abstractions (Text, MathTex, Rectangle, Circle, Arrows).
-4. The timeline must explicitly define `visual_state` (what is visible/hidden) and `visual_action` (what happens).
-5. Align your narration mathematically with the visual actions using `narration_visual_alignment`.
-6. SIMPLICITY IN MANIM: While your educational logic must be advanced and precise, the `visual_action`s must be mathematically clean and easy to code (e.g. "Highlight the second column", "Fade in the equation", "Transform the 6 into a 5").
+CRITICAL RULES:
+1. CONTINUOUS STORYTELLING: Your storyboard MUST be one continuous visual flow. Do not abruptly wipe the screen between scenes. The visual elements established in Scene 1 must logically evolve and transition into Scene 2, and so on.
+2. TEXTBOOK ALIGNMENT: Ensure the animation directly relates to and explains the core mathematical concept provided in the Source Material Context.
+3. VISUAL SIMPLICITY: Your `visual_description` and `animation_instructions` must be achievable using basic Manim elements (Text, MathTex, Rectangle, Circle, Arrow). Do not describe overly complex 3D scenes or external images.
+4. NARRATION: Write clear, engaging voiceover narration for each scene.
 
-Output the result strictly matching the provided massive JSON schema.
+Output the result strictly matching the provided simple JSON schema.
 """
 
 def generate_storyboard(client: LocalLLMClient, concept: ConceptChunk) -> Storyboard:

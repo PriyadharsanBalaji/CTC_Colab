@@ -16,20 +16,13 @@ To solve the VRAM limits, V2 implemented a strict Multi-Pass execution pipeline 
 3. **Phase 3 (Render)**: Executes the Manim compiler.
 - **The Problem:** The storyboard schema was too simple (just returning a list of basic scenes). Manim had to constantly wipe the screen and recalculate coordinates, leading to text overlapping and items rendering off-screen. It also lacked deep educational structure.
 
-### V3: The Advanced Pedagogical Structure (Current)
-V3 keeps the V2 Multi-Pass memory architecture, but completely overhauls the internal logic:
-1. **Massive Pydantic Schema Overhaul (`storyboard/schemas.py`)**
-   The storyboard planner no longer just asks for "scenes". DeepSeek-R1 is now forced to act as a master curriculum designer, filling out a massive, highly detailed JSON structure containing:
-   - `educational_strategy` (core idea, misconceptions)
-   - `conceptual_objects` (semantic meaning of on-screen items)
-   - `timeline` (continuous, step-by-step logic detailing exact `visual_state` changes without wiping the screen)
-   - `mathematical_constraints` and `narration_visual_alignment`
-2. **Strict Boundary Enforcement (`manim_gen/generator.py`)**
-   Codestral is given strict mathematical rules to prevent the "text overlapping" and "off-screen" bugs:
-   - Elements are forced into `VGroup`s and arranged using `.arrange(DOWN, buff=0.5)`.
-   - Dynamic scaling logic is injected: `if my_group.width > config.frame_width - 1: my_group.scale_to_fit_width(config.frame_width - 1)` so nothing renders off-screen.
-3. **Premium Animations**
-   Boring `.Create()` animations have been replaced. Codestral uses `Write()`, `GrowFromCenter()`, and `TransformMatchingTex()`.
+### V3: The Advanced Pedagogical Structure (Deprecated)
+V3 kept the Multi-Pass architecture but introduced a massive, highly detailed Pydantic JSON schema (10+ classes) forcing the AI to act as a master curriculum designer.
+- **The Problem:** 14B models are not smart enough to consistently output 150+ lines of strictly formatted nested JSON. It hallucinated invalid JSON arrays and dictionaries, causing Pydantic and `json.loads()` to crash miserably despite aggressive type loosening and auto-retry loops.
+
+### V4: The Simple Continuous Storyboard (Current)
+V4 abandons the bloated schema and pivots back to an ultra-simple JSON structure (`Scene` and `Storyboard`). 
+- **The Fix:** To solve the "screen wipe" and "bad layout" bugs from V1/V2, V4 relies entirely on **Prompt Engineering** instead of schema bloat. The system prompt explicitly bans wiping the screen (`self.clear()`) and mathematically forces a continuous, evolving narrative that maps directly to the textbook.
 
 ## Argparse Controls
 
