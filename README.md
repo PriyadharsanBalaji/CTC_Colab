@@ -24,6 +24,39 @@ V3 kept the Multi-Pass architecture but introduced a massive, highly detailed Py
 V4 abandons the bloated schema and pivots back to an ultra-simple JSON structure (`Scene` and `Storyboard`). 
 - **The Fix:** To solve the "screen wipe" and "bad layout" bugs from V1/V2, V4 relies entirely on **Prompt Engineering** instead of schema bloat. The system prompt explicitly bans wiping the screen (`self.clear()`) and mathematically forces a continuous, evolving narrative that maps directly to the textbook.
 
+## 3. Environment Setup (Google Colab)
+
+To run this on a free Google Colab T4 GPU, run the following cells.
+
+**Cell 1: Install Dependencies**
+```bash
+!pip install pypdf pydantic manim requests
+```
+
+**Cell 2: Install and Start Ollama**
+```bash
+!curl -fsSL https://ollama.com/install.sh | sh
+
+# Start the Ollama server in the background
+import subprocess
+import time
+print("Starting Ollama server...")
+subprocess.Popen(["ollama", "serve"])
+time.sleep(3)
+
+# Pull the models (this will automatically quantize them to fit in the 16GB GPU)
+!ollama pull deepseek-r1:14b
+!ollama pull materion/manim-coder:14b
+```
+
+## 4. Running the Pipeline
+
+Once Ollama is running and the models are pulled, you can execute the pipeline:
+
+```bash
+!python pipeline.py --pdf "data/inputs/pdfs/Permutations_text.pdf" --limit 5
+```
+
 ## Argparse Controls
 
 Use the `--limit` flag to test batches and avoid running a 50-page PDF at once:

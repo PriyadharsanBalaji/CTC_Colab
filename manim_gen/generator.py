@@ -55,30 +55,16 @@ def extract_python_code(llm_response: str) -> str:
     text_no_think = re.sub(r"<think>.*?</think>", "", llm_response, flags=re.DOTALL)
     return text_no_think.strip()
 
-def generate_manim_script(client: LocalLLMClient, storyboard: Storyboard) -> str:
+def generate_manim_script(client, storyboard: Storyboard) -> str:
     """Generates the Manim python script string."""
     prompt = build_manim_prompt(storyboard)
     
-    # We bypass the strict JSON mode here since we want Python code
-    # We'll construct a direct prompt
     system_prompt = "You are an expert Python Manim animator. Output only valid Python code inside ```python blocks."
     
-    formatted_prompt = (
-        f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
-        f"<|im_start|>user\n{prompt}<|im_end|>\n"
-        f"<|im_start|>assistant\n"
-    )
-    
     print("[LLM] Generating Manim Script (this might take a minute)...")
-    response = client.llm(
-        formatted_prompt,
-        max_tokens=-1,
-        temperature=0.2, # Low temp for code
-        stop=["<|im_end|>"],
-        echo=False
-    )
+    # For Ollama Client
+    raw_text = client.generate(prompt, system=system_prompt, temperature=0.2)
     
-    raw_text = response['choices'][0]['text']
     code = extract_python_code(raw_text)
     
     # Safety net: If the LLM still tries to use ImageMobject, replace it with a Text placeholder
@@ -133,7 +119,7 @@ FadeOut = SafeFadeOut
         
     return code
 
-def fix_manim_script(client: LocalLLMClient, bad_code: str, traceback_error: str) -> str:
+def fix_manim_script(client, bad_code: str, traceback_error: str) -> str:
     """Sends the traceback to the LLM and asks it to fix the script."""
     system_prompt = "You are an expert Python Manim animator. Output only valid Python code inside ```python blocks."
     
@@ -156,22 +142,8 @@ Remember the CRITICAL rules:
 - Make sure all variables are defined before using them.
 """
     
-    formatted_prompt = (
-        f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
-        f"<|im_start|>user\n{prompt}<|im_end|>\n"
-        f"<|im_start|>assistant\n"
-    )
-    
     print("[LLM] Fixing Manim Script based on Traceback...")
-    response = client.llm(
-        formatted_prompt,
-        max_tokens=-1,
-        temperature=0.1, # Even lower temp for bug fixing
-        stop=["<|im_end|>"],
-        echo=False
-    )
-    
-    raw_text = response['choices'][0]['text']
+    raw_text = client.generate(prompt, system=system_prompt, temperature=0.1)
     code = extract_python_code(raw_text)
     
     # Re-apply the monkey patch just in case

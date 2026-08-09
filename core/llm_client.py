@@ -1,32 +1,41 @@
-"""Local LLM client using llama_cpp for structured JSON generation."""
+"""Local LLM client using Ollama for JSON and Python Code generation."""
 
 import json
+import requests
+import re
 from pydantic import BaseModel
-try:
-    from llama_cpp import Llama
-except ImportError:
-    Llama = None
-    print("Warning: llama-cpp-python is not installed.")
 
+class OllamaClient:
+    def __init__(self, model_name: str, base_url: str = "http://localhost:11434"):
+        """
+        Initialize the Ollama client.
+        """
+        self.model_name = model_name
+        self.base_url = base_url
+        print(f"Initialized Ollama client for model: {model_name}")
 
-class LocalLLMClient:
-    def __init__(self, model_path: str, n_ctx: int = 8192, n_gpu_layers: int = -1):
-        """
-        Initialize the LlamaCPP client.
-        n_gpu_layers=-1 attempts to offload all layers to GPU (useful for Qwen2.5 7B on 8GB+ VRAM).
-        """
-        if Llama is None:
-            raise ImportError("llama-cpp-python is required. Install via prebuilt wheel: https://github.com/abetlen/llama-cpp-python")
+    def generate(self, prompt: str, system: str = "", temperature: float = 0.2, format: str = None) -> str:
+        """Raw generation endpoint using Ollama API."""
+        url = f"{self.base_url}/api/generate"
+        payload = {
+            "model": self.model_name,
+            "prompt": prompt,
+            "system": system,
+            "stream": False,
+            "options": {
+                "temperature": temperature
+            }
+        }
+        if format:
+            payload["format"] = format
             
-        print(f"Loading local model from {model_path}...")
-        self.llm = Llama(
-            model_path=model_path,
-            n_ctx=n_ctx,
-            n_gpu_layers=n_gpu_layers,
-            verbose=False,
-            # For JSON schema enforcement in llama.cpp (optional but helpful if supported in the build)
-        )
-        print("Model loaded successfully.")
+        try:
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+            return response.json().get("response", "")
+        except requests.exceptions.RequestException as e:
+            print(f"[Ollama Error] Ensure the Ollama server is running! Error: {e}")
+            raise e
 
     def generate_json(self, prompt: str, schema_model: type[BaseModel], max_retries: int = 3) -> dict:
         """
@@ -35,50 +44,35 @@ class LocalLLMClient:
         
         system_prompt = (
             "You are an expert educational scriptwriter and Manim animator. "
-            "You ALWAYS output raw, valid JSON inside a ```json code block. Never add conversational text."
+            "You ALWAYS output raw, valid JSON. Never add conversational text."
         )
         
         schema_str = json.dumps(schema_model.model_json_schema(), indent=2)
         
-        formatted_prompt = (
-            f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
-            f"<|im_start|>user\n{prompt}\n\n"
+        full_prompt = (
+            f"{prompt}\n\n"
             f"Here is the JSON schema you must follow:\n```json\n{schema_str}\n```\n"
-            f"Return ONLY the requested JSON object.\n<|im_end|>\n"
-            f"<|im_start|>assistant\n```json\n"
+            f"Return ONLY the requested JSON object."
         )
 
         for attempt in range(max_retries):
             print(f"[LLM] Generating storyboard (Attempt {attempt + 1}/{max_retries})...")
-            response = self.llm(
-                formatted_prompt,
-                max_tokens=4096,
-                temperature=0.4,
-                stop=["```\n<|im_end|>", "<|im_end|>"],
-                echo=False
-            )
             
-            raw_text = "```json\n" + response['choices'][0]['text']
+            # Using Ollama's native JSON format feature mathematically guarantees valid JSON!
+            raw_text = self.generate(full_prompt, system=system_prompt, temperature=0.4, format="json")
             
-            import re
-            match = re.search(r"```json\n(.*?)\n```", raw_text, re.DOTALL)
-            if match:
-                text = match.group(1).strip()
-            else:
-                text = raw_text.replace("```json", "").replace("```", "").strip()
-                
             try:
-                return json.loads(text)
+                return json.loads(raw_text)
             except json.JSONDecodeError as e:
                 print(f"[Error] Failed to parse JSON on attempt {attempt + 1}.")
                 # Simple auto-fix for missing brackets
                 try:
-                    if not text.endswith("}"):
-                        text += "}"
-                    return json.loads(text)
+                    if not raw_text.endswith("}"):
+                        raw_text += "}"
+                    return json.loads(raw_text)
                 except:
                     if attempt == max_retries - 1:
-                        print(f"[Fatal] Failed to parse JSON after {max_retries} attempts. Last output:\n{text}")
+                        print(f"[Fatal] Failed to parse JSON after {max_retries} attempts. Last output:\n{raw_text}")
                         raise e
                     print("[Retry] Retrying generation to fix JSON syntax...")
                     continue

@@ -1,4 +1,4 @@
-"""Main orchestration pipeline for PDF to Manim Videos (End-to-End V2 Multi-Pass)."""
+"""Main orchestration pipeline for PDF to Manim Videos (End-to-End V5 Ollama)."""
 
 import argparse
 import json
@@ -8,35 +8,13 @@ import gc
 from pathlib import Path
 
 from core.parser import parse_pdf_to_concepts
-from core.llm_client import LocalLLMClient
+from core.llm_client import OllamaClient
 from storyboard.planner import generate_storyboard
 from storyboard.schemas import Storyboard
 from manim_gen.generator import generate_manim_script, fix_manim_script
 
-try:
-    from huggingface_hub import hf_hub_download
-except ImportError:
-    hf_hub_download = None
-
-def get_or_download_model(repo_id: str, filename: str) -> str:
-    if hf_hub_download is None:
-        raise ImportError("huggingface_hub is required to auto-download models. pip install huggingface_hub")
-        
-    print(f"Ensuring model {filename} is downloaded from {repo_id}...")
-    
-    download_dir = "/content/models" if os.path.exists("/content") else "./models"
-    os.makedirs(download_dir, exist_ok=True)
-    
-    downloaded_path = hf_hub_download(
-        repo_id=repo_id, 
-        filename=filename, 
-        local_dir=download_dir,
-        local_dir_use_symlinks=False
-    )
-    return downloaded_path
-
-
 def sanitize_filename(name: str) -> str:
+    """Removes invalid characters for filenames."""
     return "".join(c if c.isalnum() else "_" for c in name)[:30].strip("_")
 
 
@@ -75,7 +53,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     for d in [storyboard_dir, script_dir, video_dir]:
         d.mkdir(parents=True, exist_ok=True)
 
-    print(f"--- Starting V2 Pipeline for {pdf_path} (Limit: {limit} concepts) ---")
+    print(f"--- Starting V5 Ollama Pipeline for {pdf_path} (Limit: {limit} concepts) ---")
     
     print("Parsing PDF into Concept Chunks...")
     all_concepts = parse_pdf_to_concepts(pdf_path)
@@ -93,17 +71,14 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     print(f"Processing {len(concepts)} concepts after filtering and limiting.")
 
     # Model Definitions
-    STORYBOARD_REPO = "unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF"
-    STORYBOARD_FILE = "DeepSeek-R1-Distill-Qwen-14B-Q4_K_M.gguf"
-    
-    CODE_REPO = "bartowski/Codestral-22B-v0.1-GGUF"
-    CODE_FILE = "Codestral-22B-v0.1-Q4_K_M.gguf"
+    STORYBOARD_MODEL = "deepseek-r1:14b"
+    CODE_MODEL = "maternion/manim-coder:14b"
 
     # ---------------------------------------------------------
     # PHASE 1: STORYBOARD GENERATION
     # ---------------------------------------------------------
     print("\n" + "="*50)
-    print("PHASE 1: STORYBOARD GENERATION (DeepSeek-R1-14B)")
+    print("PHASE 1: STORYBOARD GENERATION (Ollama)")
     print("="*50)
     
     missing_storyboards = []
@@ -116,44 +91,20 @@ def run_pipeline(pdf_path: str, limit: int = 10):
             print(f"  [Skip] Storyboard already exists: {sb_file}")
 
     if missing_storyboards:
-        sb_model_path = get_or_download_model(STORYBOARD_REPO, STORYBOARD_FILE)
-        print(f"\nLoading Storyboard Model: {sb_model_path}")
-        client = LocalLLMClient(model_path=sb_model_path, n_gpu_layers=-1, n_ctx=8192)
+        print(f"\nLoading Storyboard Model: {STORYBOARD_MODEL}")
+        client = OllamaClient(model_name=STORYBOARD_MODEL)
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
             storyboard = generate_storyboard(client, concept)
             with open(sb_file, "w") as f:
-                json.dump(storyboard.model_dump(), f, indent=2)
-                
-        # UNLOAD MODEL TO FREE VRAM
-        print("Unloading Storyboard Model to free VRAM...")
-        del client
-        gc.collect()
+                f.write(storyboard.model_dump_json(indent=2))
     else:
         print("All storyboards already generated. Skipping Phase 1 model load.")
 
     # ---------------------------------------------------------
-    # PHASE 2: MANIM SCRIPT GENERATION
+    # PHASE 2 & 3: SCRIPT GENERATION & MANIM RENDERING
     # ---------------------------------------------------------
-    print("\n" + "="*50)
-    print("PHASE 2: MANIM SCRIPT GENERATION (Codestral-22B)")
-    print("="*50)
-    
-    missing_scripts = []
-    for i, concept in enumerate(concepts):
-        safe_name = f"concept_{i:02d}_{sanitize_filename(concept.title)}"
-        sb_file = storyboard_dir / f"{safe_name}.json"
-        script_file = script_dir / f"{safe_name}.py"
-        
-        if not script_file.exists():
-            # Load the storyboard
-            with open(sb_file, "r") as f:
-                storyboard = Storyboard(**json.load(f))
-            missing_scripts.append((storyboard, script_file))
-        else:
-            print(f"  [Skip] Manim script already exists: {script_file}")
-
     print("\n" + "="*50)
     print("PHASE 2 & 3: SCRIPT GENERATION & MANIM RENDERING (WITH SELF-HEALING)")
     print("="*50)
@@ -162,9 +113,8 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     def get_code_client():
         nonlocal code_client
         if code_client is None:
-            code_model_path = get_or_download_model(CODE_REPO, CODE_FILE)
-            print(f"\nLoading Code Model: {code_model_path}")
-            code_client = LocalLLMClient(model_path=code_model_path, n_gpu_layers=-1, n_ctx=4096)
+            print(f"\nLoading Code Model: {CODE_MODEL}")
+            code_client = OllamaClient(model_name=CODE_MODEL)
         return code_client
 
     for i, concept in enumerate(concepts):
@@ -252,9 +202,8 @@ def run_pipeline(pdf_path: str, limit: int = 10):
 
     print("\nPipeline Complete!")
 
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run CTC End-to-End Multi-Pass Pipeline")
+    parser = argparse.ArgumentParser(description="Run CTC End-to-End V5 Pipeline")
     parser.add_argument("--pdf", type=str, required=True, help="Path to input PDF")
     parser.add_argument("--limit", type=int, default=10, help="Maximum number of concepts to process (default: 10)")
     
