@@ -1,7 +1,7 @@
 """Manim script generation using the LLM from a JSON storyboard."""
 
 import re
-from core.llm_client import LocalLLMClient
+from core.llm_client import OllamaClient
 from storyboard.schemas import Storyboard
 
 
