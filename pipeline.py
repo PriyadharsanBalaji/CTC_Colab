@@ -169,7 +169,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
 
     for i, concept in enumerate(concepts):
         safe_name = f"concept_{i:02d}_{sanitize_filename(concept.title)}"
-        sb_file = sb_dir / f"{safe_name}.json"
+        sb_file = storyboard_dir / f"{safe_name}.json"
         script_file = script_dir / f"{safe_name}.py"
         final_video = video_dir / f"{safe_name}.mp4"
         
