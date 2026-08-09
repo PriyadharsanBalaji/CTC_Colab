@@ -30,6 +30,7 @@ To run this on a free Google Colab T4 GPU, run the following cells.
 
 **Cell 1: Install Dependencies**
 ```bash
+!apt-get update && apt-get install -y zstd
 !pip install pypdf pydantic manim requests
 ```
 
