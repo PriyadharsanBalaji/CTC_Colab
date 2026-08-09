@@ -11,7 +11,7 @@ from core.parser import parse_pdf_to_concepts
 from core.llm_client import LocalLLMClient
 from storyboard.planner import generate_storyboard
 from storyboard.schemas import Storyboard
-from manim_gen.generator import generate_manim_script
+from manim_gen.generator import generate_manim_script, fix_manim_script
 
 try:
     from huggingface_hub import hf_hub_download
@@ -154,41 +154,44 @@ def run_pipeline(pdf_path: str, limit: int = 10):
         else:
             print(f"  [Skip] Manim script already exists: {script_file}")
 
-    if missing_scripts:
-        code_model_path = get_or_download_model(CODE_REPO, CODE_FILE)
-        print(f"\nLoading Code Model: {code_model_path}")
-        client = LocalLLMClient(model_path=code_model_path, n_gpu_layers=-1, n_ctx=4096)
-        
-        for storyboard, script_file in missing_scripts:
-            print(f"  [Task] Generating Manim Script for: {script_file.stem}...")
-            script_code = generate_manim_script(client, storyboard)
-            with open(script_file, "w", encoding="utf-8") as f:
-                f.write(script_code)
-                
-        # UNLOAD MODEL TO FREE VRAM
-        print("Unloading Code Model to free VRAM...")
-        del client
-        gc.collect()
-    else:
-        print("All scripts already generated. Skipping Phase 2 model load.")
-
-    # ---------------------------------------------------------
-    # PHASE 3: MANIM RENDERING
-    # ---------------------------------------------------------
     print("\n" + "="*50)
-    print("PHASE 3: MANIM RENDERING")
+    print("PHASE 2 & 3: SCRIPT GENERATION & MANIM RENDERING (WITH SELF-HEALING)")
     print("="*50)
+
+    code_client = None
+    def get_code_client():
+        nonlocal code_client
+        if code_client is None:
+            code_model_path = get_or_download_model(CODE_REPO, CODE_FILE)
+            print(f"\nLoading Code Model: {code_model_path}")
+            code_client = LocalLLMClient(model_path=code_model_path, n_gpu_layers=-1, n_ctx=4096)
+        return code_client
 
     for i, concept in enumerate(concepts):
         safe_name = f"concept_{i:02d}_{sanitize_filename(concept.title)}"
+        sb_file = sb_dir / f"{safe_name}.json"
         script_file = script_dir / f"{safe_name}.py"
         final_video = video_dir / f"{safe_name}.mp4"
         
         if final_video.exists():
             print(f"  [Skip] Final video already exists: {final_video}")
             continue
-            
-        print(f"  [Task] Rendering Manim Video for: {safe_name}...")
+
+        # Generate Script if missing
+        if not script_file.exists():
+            print(f"  [Task] Generating Manim Script for: {safe_name}...")
+            if not sb_file.exists():
+                print(f"  [Error] No storyboard found for {safe_name}. Skipping.")
+                continue
+            with open(sb_file, "r") as f:
+                storyboard = Storyboard(**json.load(f))
+            client = get_code_client()
+            script_code = generate_manim_script(client, storyboard)
+            with open(script_file, "w", encoding="utf-8") as f:
+                f.write(script_code)
+                
+        # Self-Healing Render Loop
+        max_retries = 3
         media_out = base_dir / "outputs" / "manim_temp" / safe_name
         cmd = [
             "manim", "-ql", 
@@ -196,23 +199,56 @@ def run_pipeline(pdf_path: str, limit: int = 10):
             str(script_file.absolute())
         ]
         
-        try:
-            subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        for attempt in range(max_retries):
+            print(f"  [Task] Rendering Manim Video for: {safe_name} (Attempt {attempt + 1}/{max_retries})...")
             
-            video_search_dir = media_out / "videos" / script_file.stem / "480p15"
-            if video_search_dir.exists():
-                parts = list(video_search_dir.glob("*.mp4"))
-                parts.sort(key=lambda x: x.name)
-                
-                if parts:
-                    stitch_videos([str(p) for p in parts], str(final_video))
-                    print(f"  [Success] Saved final video to {final_video}")
+            # Run Manim, capturing stdout and stderr
+            process = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if process.returncode == 0:
+                video_search_dir = media_out / "videos" / script_file.stem / "480p15"
+                if video_search_dir.exists():
+                    parts = list(video_search_dir.glob("*.mp4"))
+                    parts.sort(key=lambda x: x.name)
+                    
+                    if parts:
+                        stitch_videos([str(p) for p in parts], str(final_video))
+                        print(f"  [Success] Saved final video to {final_video}")
+                    else:
+                        print(f"  [Warning] Manim ran but no mp4 files were found for {safe_name}.")
                 else:
-                    print(f"  [Warning] Manim ran but no mp4 files were found for {safe_name}.")
+                    print(f"  [Warning] Manim output directory not found for {safe_name}.")
+                break # Success! Break out of retry loop
             else:
-                print(f"  [Warning] Manim output directory not found for {safe_name}.")
-        except subprocess.CalledProcessError:
-            print(f"  [Error] Manim rendering failed for {safe_name}. Run manually to see logs.")
+                print(f"  [Error] Manim rendering failed!")
+                if attempt < max_retries - 1:
+                    print(f"  [Self-Healing] Sending traceback to LLM for auto-correction...")
+                    with open(script_file, "r", encoding="utf-8") as f:
+                        bad_code = f.read()
+                    
+                    # Extract the bottom part of stderr as traceback
+                    traceback_error = process.stderr.strip()
+                    if not traceback_error:
+                        traceback_error = process.stdout.strip()
+                    if len(traceback_error) > 2000:
+                        traceback_error = "..." + traceback_error[-2000:]
+                        
+                    client = get_code_client()
+                    fixed_code = fix_manim_script(client, bad_code, traceback_error)
+                    
+                    with open(script_file, "w", encoding="utf-8") as f:
+                        f.write(fixed_code)
+                else:
+                    print(f"  [Fatal] Manim rendering failed after {max_retries} attempts.")
+                    print("--- LAST ERROR TRACEBACK ---")
+                    err = process.stderr.strip() or process.stdout.strip()
+                    print(err[-1000:])
+                    print("----------------------------")
+
+    if code_client is not None:
+        print("Unloading Code Model to free VRAM...")
+        del code_client
+        gc.collect()
 
     print("\nPipeline Complete!")
 

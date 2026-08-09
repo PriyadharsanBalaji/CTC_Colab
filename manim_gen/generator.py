@@ -132,3 +132,88 @@ FadeOut = SafeFadeOut
     code = code.replace("spacing=", "buff=")
         
     return code
+
+def fix_manim_script(client: LocalLLMClient, bad_code: str, traceback_error: str) -> str:
+    """Sends the traceback to the LLM and asks it to fix the script."""
+    system_prompt = "You are an expert Python Manim animator. Output only valid Python code inside ```python blocks."
+    
+    prompt = f"""I tried to run your Manim script, but it crashed with the following error:
+
+<ERROR_TRACEBACK>
+{traceback_error}
+</ERROR_TRACEBACK>
+
+Here is the code you wrote that caused the error:
+```python
+{bad_code}
+```
+
+Please fix the error and rewrite the complete, runnable Python script.
+Remember the CRITICAL rules:
+- Only output the raw python code inside a ```python block.
+- Use `VGroup` instead of `Group`.
+- If a method like `Create()` or `Write()` was passed a list, unpack it! (e.g., `*my_list`).
+- Make sure all variables are defined before using them.
+"""
+    
+    formatted_prompt = (
+        f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
+        f"<|im_start|>user\n{prompt}<|im_end|>\n"
+        f"<|im_start|>assistant\n"
+    )
+    
+    print("[LLM] Fixing Manim Script based on Traceback...")
+    response = client.llm(
+        formatted_prompt,
+        max_tokens=-1,
+        temperature=0.1, # Even lower temp for bug fixing
+        stop=["<|im_end|>"],
+        echo=False
+    )
+    
+    raw_text = response['choices'][0]['text']
+    code = extract_python_code(raw_text)
+    
+    # Re-apply the monkey patch just in case
+    header = """from manim import *
+
+# --- Safety Monkey Patches for LLM Generated Code ---
+_original_create = Create
+_original_write = Write
+_original_fadein = FadeIn
+_original_fadeout = FadeOut
+
+def _safe_wrap(mobj):
+    if isinstance(mobj, list):
+        return VGroup(*[_safe_wrap(m) for m in mobj])
+    return mobj
+
+class SafeCreate(_original_create):
+    def __init__(self, mobject, **kwargs):
+        super().__init__(_safe_wrap(mobject), **kwargs)
+
+class SafeWrite(_original_write):
+    def __init__(self, mobject, **kwargs):
+        super().__init__(_safe_wrap(mobject), **kwargs)
+
+class SafeFadeIn(_original_fadein):
+    def __init__(self, *mobjects, **kwargs):
+        super().__init__(*[_safe_wrap(m) for m in mobjects], **kwargs)
+
+class SafeFadeOut(_original_fadeout):
+    def __init__(self, *mobjects, **kwargs):
+        super().__init__(*[_safe_wrap(m) for m in mobjects], **kwargs)
+
+Create = SafeCreate
+Write = SafeWrite
+FadeIn = SafeFadeIn
+FadeOut = SafeFadeOut
+# ---------------------------------------------------
+
+"""
+    code = code.replace("from manim import *", "").strip()
+    code = header + code
+    code = code.replace("spacing=", "buff=")
+    
+    return code
+
