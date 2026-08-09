@@ -1,6 +1,6 @@
 """Storyboard planning prompt and generation logic (Simplified V4)."""
 
-from core.llm_client import LocalLLMClient
+from core.llm_client import OllamaClient
 from core.parser import ConceptChunk
 from storyboard.schemas import Storyboard
 
@@ -25,7 +25,7 @@ CRITICAL RULES:
 Output the result strictly matching the provided simple JSON schema.
 """
 
-def generate_storyboard(client: LocalLLMClient, concept: ConceptChunk) -> Storyboard:
+def generate_storyboard(client: OllamaClient, concept: ConceptChunk) -> Storyboard:
     """Generates the structured Pydantic storyboard for a concept chunk."""
     prompt = build_planner_prompt(concept)
     json_data = client.generate_json(prompt, Storyboard)
