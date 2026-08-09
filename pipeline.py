@@ -72,7 +72,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
 
     # Model Definitions
     STORYBOARD_MODEL = "deepseek-r1:14b"
-    CODE_MODEL = "maternion/manim-coder:14b"
+    CODE_MODEL = "Maternion/manim-coder:14b"
 
     # ---------------------------------------------------------
     # PHASE 1: STORYBOARD GENERATION

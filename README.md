@@ -30,7 +30,7 @@ To run this on a free Google Colab T4 GPU, run the following cells.
 
 **Cell 1: Install Dependencies**
 ```bash
-!apt-get update && apt-get install -y zstd
+!apt-get update && apt-get install -y zstd pciutils
 !pip install pypdf pydantic manim requests
 ```
 
@@ -47,7 +47,7 @@ time.sleep(3)
 
 # Pull the models (this will automatically quantize them to fit in the 16GB GPU)
 !ollama pull deepseek-r1:14b
-!ollama pull materion/manim-coder:14b
+!ollama pull Maternion/manim-coder:14b
 ```
 
 ## 4. Running the Pipeline
