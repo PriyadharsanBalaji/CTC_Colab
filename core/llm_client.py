@@ -23,7 +23,8 @@ class OllamaClient:
             "system": system,
             "stream": False,
             "options": {
-                "temperature": temperature
+                "temperature": temperature,
+                "num_ctx": 8192
             }
         }
         if format:
