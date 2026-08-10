@@ -163,11 +163,12 @@ class HFVisionClient:
         content = []
         if images:
             for b64 in images:
-                # Cap max_pixels to prevent SDPA attention from OOMing
+                # Aggressively cap max_pixels to ~800x600 equivalent. 
+                # Attention VRAM scales quadratically with pixels. This prevents the 3.5GB OOM spike.
                 content.append({
                     "type": "image", 
                     "image": f"data:image/png;base64,{b64}",
-                    "max_pixels": 960 * 720
+                    "max_pixels": 600 * 800
                 })
         content.append({"type": "text", "text": full_prompt})
 
