@@ -135,7 +135,8 @@ class HFVisionClient:
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
             torch_dtype=torch.float16,
-            device_map="balanced"
+            device_map="auto",
+            max_memory={0: "6GB", 1: "14GB"}
         )
         self.processor = AutoProcessor.from_pretrained(model_name)
 
@@ -162,7 +163,12 @@ class HFVisionClient:
         content = []
         if images:
             for b64 in images:
-                content.append({"type": "image", "image": f"data:image/png;base64,{b64}"})
+                # Cap max_pixels to ~720p equivalent to prevent SDPA attention from allocating 5GB+ VRAM
+                content.append({
+                    "type": "image", 
+                    "image": f"data:image/png;base64,{b64}",
+                    "max_pixels": 1280 * 720
+                })
         content.append({"type": "text", "text": full_prompt})
 
         messages = [
