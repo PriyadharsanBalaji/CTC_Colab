@@ -226,6 +226,14 @@ class HFVisionClient:
                     else:
                         return obj
                 
+                try:
+                    del inputs
+                    del generated_ids
+                    del generated_ids_trimmed
+                    del image_inputs
+                    del video_inputs
+                except:
+                    pass
                 import gc; import torch
                 torch.cuda.empty_cache(); gc.collect()
                 return lowercase_keys(data)
@@ -253,6 +261,14 @@ class HFVisionClient:
                         else:
                             return obj
                     
+                    try:
+                        del inputs
+                        del generated_ids
+                        del generated_ids_trimmed
+                        del image_inputs
+                        del video_inputs
+                    except:
+                        pass
                     import gc; import torch
                     torch.cuda.empty_cache(); gc.collect()
                     return lowercase_keys(data)
