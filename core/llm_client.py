@@ -137,7 +137,7 @@ class HFVisionClient:
 
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
-            device_map="auto",
+            device_map="balanced",
             quantization_config=quantization_config
         )
         self.processor = AutoProcessor.from_pretrained(model_name)
