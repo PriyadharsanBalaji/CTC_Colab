@@ -134,9 +134,8 @@ class HFVisionClient:
         
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
             device_map="auto",
-            max_memory={0: "6GB", 1: "14GB"}
+            load_in_8bit=True
         )
         self.processor = AutoProcessor.from_pretrained(model_name)
 
