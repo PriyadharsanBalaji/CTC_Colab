@@ -67,3 +67,11 @@ Use the `--limit` flag to test batches and avoid running a 50-page PDF at once:
 # Processes the first 2 concepts
 python pipeline.py --pdf "data/inputs/pdfs/Permutations_text.pdf" --limit 2
 ```
+
+### V6: Kaggle Dual-GPU Pipeline (Ollama Vision Bottleneck)
+While V6 successfully migrated the pipeline to Kaggle, we hit severe limitations using Ollama for Phase 1 (Storyboard Generation) with Vision models:
+1. **Architecture Lags:** New models like Llama 3.2 Vision (mllama architecture) were not immediately supported on Kaggle's cached Ollama binaries, leading to unknown model architecture errors.
+2. **Persistence Issues:** Kaggle destroys the /root/.ollama directory on kernel restarts, forcing 8GB+ models to be re-downloaded every session.
+3. **JSON Schema Adherence:** Small quantization models like llava:13b and llava-llama3 heavily struggled to consistently generate massive, deeply nested JSON schemas (e.g., Storyboard containing lists of Scenes). They would frequently drop root keys, output single scenes instead of lists, or literally echo the schema definition back due to weak instruction tuning.
+
+Due to these unreliability issues with Ollama's vision ecosystem, V7 shifts Phase 1 to native HuggingFace 	ransformers (using models like Qwen2-VL) for perfect JSON adherence, while retaining Ollama strictly for Phase 2 code generation.
