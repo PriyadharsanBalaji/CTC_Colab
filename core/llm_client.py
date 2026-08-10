@@ -46,15 +46,16 @@ class OllamaClient:
         
         system_prompt = (
             "You are an expert educational scriptwriter and Manim animator. "
-            "You ALWAYS output raw, valid JSON. Never add conversational text."
+            "You ALWAYS output raw, valid JSON. Never add conversational text. "
+            "CRITICAL: Do NOT echo or output the JSON schema itself! You must output a JSON *instance* containing actual data that conforms to the schema."
         )
         
         schema_str = json.dumps(schema_model.model_json_schema(), indent=2)
         
         full_prompt = (
             f"{prompt}\n\n"
-            f"Here is the JSON schema you must follow:\n```json\n{schema_str}\n```\n"
-            f"Return ONLY the requested JSON object."
+            f"Here is the JSON schema your output must conform to:\n```json\n{schema_str}\n```\n"
+            f"IMPORTANT: Generate the actual Storyboard JSON data. Do NOT repeat the $defs or the schema structure!"
         )
 
         for attempt in range(max_retries):
