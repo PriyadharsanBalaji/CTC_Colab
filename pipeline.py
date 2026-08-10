@@ -146,10 +146,23 @@ def run_pipeline(pdf_path: str, limit: int = 10):
         # Self-Healing Render Loop
         max_retries = 3
         media_out = base_dir / "outputs" / "manim_temp" / safe_name
+        # Prevent Manim from deadlocking/waiting for user input by explicitly providing the Scene class name
+        scene_name = "ConceptScene"
+        try:
+            with open(script_file, "r", encoding="utf-8") as f:
+                script_content = f.read()
+            import re
+            match = re.search(r"class\s+([A-Za-z0-9_]+)\((?:Scene|MovingCameraScene|ZoomedScene)\):", script_content)
+            if match:
+                scene_name = match.group(1)
+        except Exception:
+            pass
+            
         cmd = [
             "manim", "-ql", 
             "--media_dir", str(media_out.absolute()),
-            str(script_file.absolute())
+            str(script_file.absolute()),
+            scene_name
         ]
         
         for attempt in range(max_retries):
