@@ -65,14 +65,33 @@ class OllamaClient:
             raw_text = self.generate(full_prompt, system=system_prompt, temperature=0.4, format="json", images=images)
             
             try:
-                return json.loads(raw_text)
+                data = json.loads(raw_text)
+                # Recursively lowercase all dictionary keys to fix LLM capitalization errors
+                def lowercase_keys(obj):
+                    if isinstance(obj, dict):
+                        return {str(k).lower(): lowercase_keys(v) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [lowercase_keys(v) for v in obj]
+                    else:
+                        return obj
+                
+                return lowercase_keys(data)
             except json.JSONDecodeError as e:
                 print(f"[Error] Failed to parse JSON on attempt {attempt + 1}.")
                 # Simple auto-fix for missing brackets
                 try:
                     if not raw_text.endswith("}"):
                         raw_text += "}"
-                    return json.loads(raw_text)
+                    
+                    data = json.loads(raw_text)
+                    def lowercase_keys(obj):
+                        if isinstance(obj, dict):
+                            return {str(k).lower(): lowercase_keys(v) for k, v in obj.items()}
+                        elif isinstance(obj, list):
+                            return [lowercase_keys(v) for v in obj]
+                        else:
+                            return obj
+                    return lowercase_keys(data)
                 except:
                     if attempt == max_retries - 1:
                         print(f"[Fatal] Failed to parse JSON after {max_retries} attempts. Last output:\n{raw_text}")

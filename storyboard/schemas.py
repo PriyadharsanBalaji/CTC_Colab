@@ -5,10 +5,10 @@ from pydantic import BaseModel, Field
 
 class Scene(BaseModel):
     scene_number: int
-    narration: str = Field(description="The voiceover text spoken during this scene.")
-    visual_description: str = Field(description="Describe exactly what appears on screen. MUST connect continuously with the previous scene without wiping the screen.")
-    mathematical_concept: str = Field(description="The exact concept from the textbook being explained in this scene.")
-    animation_instructions: str = Field(description="Instructions for Manim (e.g., 'Fade in the formula, highlight the 6').")
+    narration: str = Field(description="The voiceover text spoken during this scene. MUST be a plain text string.")
+    visual_description: str = Field(description="Describe exactly what appears on screen. MUST be a plain text string. Do NOT output a dictionary or an image URL. MUST connect continuously with the previous scene without wiping the screen.")
+    mathematical_concept: str = Field(description="The exact concept from the textbook being explained in this scene. MUST be a plain text string.")
+    animation_instructions: str = Field(description="Instructions for Manim (e.g., 'Fade in the formula, highlight the 6'). MUST be a plain text string.")
 
 class Storyboard(BaseModel):
     title: str = Field(description="Title of the concept video.")
