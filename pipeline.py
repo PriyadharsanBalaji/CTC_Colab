@@ -91,19 +91,19 @@ def run_pipeline(pdf_path: str, limit: int = 10):
             print(f"  [Skip] Storyboard already exists: {sb_file}")
 
     if missing_storyboards:
-        print(f"\nLoading Storyboard Model: {STORYBOARD_MODEL}")
-        client = HFVisionClient(model_name=STORYBOARD_MODEL)
+        print(f"\nProcessing {len(missing_storyboards)} missing storyboards...")
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
+            # We MUST instantiate and unload the model for every single concept to bypass a severe memory leak in HuggingFace Qwen2-VL
+            client = HFVisionClient(model_name=STORYBOARD_MODEL)
             storyboard = generate_storyboard(client, concept, pdf_path)
             with open(sb_file, "w") as f:
                 f.write(storyboard.model_dump_json(indent=2))
+            
+            client.unload()
     else:
         print("All storyboards already generated. Skipping Phase 1 model load.")
-
-    if missing_storyboards:
-        client.unload()
 
     # ---------------------------------------------------------
     # PHASE 2 & 3: SCRIPT GENERATION & MANIM RENDERING
