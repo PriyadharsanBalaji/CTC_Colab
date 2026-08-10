@@ -71,7 +71,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     print(f"Processing {len(concepts)} concepts after filtering and limiting.")
 
     # Model Definitions
-    STORYBOARD_MODEL = "pixtral:12b"
+    STORYBOARD_MODEL = "llama3.2-vision:11b"
     CODE_MODEL = "Maternion/manim-coder:14b"
 
     # ---------------------------------------------------------
