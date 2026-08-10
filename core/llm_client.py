@@ -118,3 +118,145 @@ class OllamaClient:
                         raise e
                     print("[Retry] Retrying generation to fix JSON syntax...")
                     continue
+
+
+class HFVisionClient:
+    def __init__(self, model_name: str = "Qwen/Qwen2-VL-7B-Instruct"):
+        """
+        Initialize the HuggingFace Vision client.
+        Uses transformers and accelerate (device_map="auto") to span across GPUs.
+        """
+        import torch
+        from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
+        
+        self.model_name = model_name
+        print(f"Initializing HuggingFace Vision client for model: {model_name} (This may take a few minutes if downloading)")
+        
+        self.model = Qwen2VLForConditionalGeneration.from_pretrained(
+            model_name,
+            torch_dtype=torch.bfloat16,
+            device_map="auto"
+        )
+        self.processor = AutoProcessor.from_pretrained(model_name)
+
+    def generate_json(self, prompt: str, schema_model: type[BaseModel], max_retries: int = 3, images: list = None) -> dict:
+        """
+        Generates structured JSON following the provided Pydantic schema using Qwen2-VL.
+        """
+        from qwen_vl_utils import process_vision_info
+        
+        system_prompt = (
+            "You are an expert educational scriptwriter and Manim animator. "
+            "You ALWAYS output raw, valid JSON. Never add conversational text. "
+            "CRITICAL: Do NOT echo or output the JSON schema itself! You must output a JSON *instance* containing actual data that conforms to the schema."
+        )
+        
+        schema_str = json.dumps(schema_model.model_json_schema(), indent=2)
+        
+        full_prompt = (
+            f"{prompt}\n\n"
+            f"Here is the JSON schema your output must conform to:\n```json\n{schema_str}\n```\n"
+            f"IMPORTANT: Generate the actual Storyboard JSON data. Do NOT repeat the $defs or the schema structure!"
+        )
+
+        content = []
+        if images:
+            for b64 in images:
+                content.append({"type": "image", "image": f"data:image/png;base64,{b64}"})
+        content.append({"type": "text", "text": full_prompt})
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": content}
+        ]
+
+        text = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        image_inputs, video_inputs = process_vision_info(messages)
+        inputs = self.processor(
+            text=[text],
+            images=image_inputs,
+            videos=video_inputs,
+            padding=True,
+            return_tensors="pt",
+        ).to("cuda")
+
+        for attempt in range(max_retries):
+            print(f"[HF Vision] Generating storyboard (Attempt {attempt + 1}/{max_retries})...")
+            
+            generated_ids = self.model.generate(**inputs, max_new_tokens=2048)
+            generated_ids_trimmed = [
+                out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+            ]
+            raw_text = self.processor.batch_decode(
+                generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+            )[0]
+            
+            # Clean up JSON formatting if it added markdown tags
+            if raw_text.startswith("```json"):
+                raw_text = raw_text[7:]
+            if raw_text.startswith("```"):
+                raw_text = raw_text[3:]
+            if raw_text.endswith("```"):
+                raw_text = raw_text[:-3]
+            raw_text = raw_text.strip()
+            
+            try:
+                data = json.loads(raw_text)
+                
+                if "scene_number" in data and "scenes" not in data:
+                    data = {
+                        "title": "Storyboard",
+                        "target_audience": "Students",
+                        "story_continuity_plan": "Continuous narrative.",
+                        "scenes": [data]
+                    }
+
+                def lowercase_keys(obj):
+                    if isinstance(obj, dict):
+                        return {str(k).lower(): lowercase_keys(v) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [lowercase_keys(v) for v in obj]
+                    else:
+                        return obj
+                
+                return lowercase_keys(data)
+            except json.JSONDecodeError as e:
+                print(f"[Error] Failed to parse JSON on attempt {attempt + 1}.")
+                try:
+                    if not raw_text.endswith("}"):
+                        raw_text += "}"
+                    
+                    data = json.loads(raw_text)
+                    
+                    if "scene_number" in data and "scenes" not in data:
+                        data = {
+                            "title": "Storyboard",
+                            "target_audience": "Students",
+                            "story_continuity_plan": "Continuous narrative.",
+                            "scenes": [data]
+                        }
+
+                    def lowercase_keys(obj):
+                        if isinstance(obj, dict):
+                            return {str(k).lower(): lowercase_keys(v) for k, v in obj.items()}
+                        elif isinstance(obj, list):
+                            return [lowercase_keys(v) for v in obj]
+                        else:
+                            return obj
+                    return lowercase_keys(data)
+                except:
+                    if attempt == max_retries - 1:
+                        print(f"[Fatal] Failed to parse JSON after {max_retries} attempts. Last output:\n{raw_text}")
+                        raise e
+                    print("[Retry] Retrying generation to fix JSON syntax...")
+                    continue
+
+    def unload(self):
+        """Free VRAM after storyboard phase."""
+        import gc
+        import torch
+        del self.model
+        del self.processor
+        torch.cuda.empty_cache()
+        gc.collect()
+        print("[HF Vision] Unloaded model and cleared VRAM.")

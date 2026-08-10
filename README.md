@@ -1,6 +1,6 @@
-# CTC_Colab: V3 Advanced Pedagogical Pipeline
+# CTC_Colab: V7 Advanced Pedagogical Pipeline (HuggingFace Vision)
 
-Welcome to the V3 branch! This branch introduces massive improvements to visual layout, bounds enforcement, and a highly advanced pedagogical storyboard schema to ensure high-quality, educationally sound Manim outputs.
+Welcome to the V7 branch! This branch replaces Ollama with a robust HuggingFace `transformers` pipeline for Phase 1 (Storyboard Generation) using Qwen2-VL to guarantee flawless JSON schema adherence.
 
 ## Architecture Trajectory (Why did we switch?)
 
@@ -28,7 +28,7 @@ Kaggle gives you access to 2x T4 GPUs (32GB VRAM total), which provides the mass
 **Cell 1: Install Dependencies**
 ```bash
 !apt-get update && apt-get install -y zstd pciutils build-essential libcairo2-dev libpango1.0-dev ffmpeg
-!pip install pdfplumber pypdf pymupdf pydantic manim requests
+!pip install pdfplumber pypdf pymupdf pydantic manim requests transformers accelerate qwen-vl-utils torch torchvision
 ```
 
 **Cell 2: Install and Start Ollama**
@@ -46,8 +46,7 @@ print("Starting Ollama server...")
 subprocess.Popen(["ollama", "serve"], env=os.environ.copy())
 time.sleep(3)
 
-# Pull the models (LLaVA Llama 3 Vision for storyboards, Maternion for Manim code)
-!ollama pull llava-llama3
+# Pull the Code model (Maternion for Manim code)
 !ollama pull Maternion/manim-coder:14b
 ```
 

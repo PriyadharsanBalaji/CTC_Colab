@@ -8,7 +8,7 @@ import gc
 from pathlib import Path
 
 from core.parser import parse_pdf_to_concepts
-from core.llm_client import OllamaClient
+from core.llm_client import OllamaClient, HFVisionClient
 from storyboard.planner import generate_storyboard
 from storyboard.schemas import Storyboard
 from manim_gen.generator import generate_manim_script, fix_manim_script
@@ -71,7 +71,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     print(f"Processing {len(concepts)} concepts after filtering and limiting.")
 
     # Model Definitions
-    STORYBOARD_MODEL = "llava-llama3"
+    STORYBOARD_MODEL = "Qwen/Qwen2-VL-7B-Instruct"
     CODE_MODEL = "Maternion/manim-coder:14b"
 
     # ---------------------------------------------------------
@@ -92,7 +92,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
 
     if missing_storyboards:
         print(f"\nLoading Storyboard Model: {STORYBOARD_MODEL}")
-        client = OllamaClient(model_name=STORYBOARD_MODEL)
+        client = HFVisionClient(model_name=STORYBOARD_MODEL)
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
@@ -101,6 +101,9 @@ def run_pipeline(pdf_path: str, limit: int = 10):
                 f.write(storyboard.model_dump_json(indent=2))
     else:
         print("All storyboards already generated. Skipping Phase 1 model load.")
+
+    if missing_storyboards:
+        client.unload()
 
     # ---------------------------------------------------------
     # PHASE 2 & 3: SCRIPT GENERATION & MANIM RENDERING
