@@ -133,11 +133,11 @@ class HFVisionClient:
         print(f"Initializing HuggingFace Vision client for model: {model_name} (This may take a few minutes if downloading)")
         
         from transformers import BitsAndBytesConfig
-        quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+        quantization_config = BitsAndBytesConfig(load_in_4bit=True)
 
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
-            device_map="balanced",
+            device_map="auto",
             quantization_config=quantization_config
         )
         self.processor = AutoProcessor.from_pretrained(model_name)
