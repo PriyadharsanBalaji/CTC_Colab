@@ -35,11 +35,15 @@ Kaggle gives you access to 2x T4 GPUs (32GB VRAM total), which provides the mass
 ```bash
 !curl -fsSL https://ollama.com/install.sh | sh
 
+# Set Ollama to save models in the persistent working directory!
+import os
+os.environ["OLLAMA_MODELS"] = "/kaggle/working/ollama_models"
+
 # Start the Ollama server in the background
 import subprocess
 import time
 print("Starting Ollama server...")
-subprocess.Popen(["ollama", "serve"])
+subprocess.Popen(["ollama", "serve"], env=os.environ.copy())
 time.sleep(3)
 
 # Pull the models (LLaVA Llama 3 Vision for storyboards, Maternion for Manim code)
