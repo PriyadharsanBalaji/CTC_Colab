@@ -66,6 +66,16 @@ class OllamaClient:
             
             try:
                 data = json.loads(raw_text)
+                
+                # LLM robustness: If it generated a single Scene instead of a Storyboard, wrap it!
+                if "scene_number" in data and "scenes" not in data:
+                    data = {
+                        "title": "Storyboard",
+                        "target_audience": "Students",
+                        "story_continuity_plan": "Continuous narrative.",
+                        "scenes": [data]
+                    }
+
                 # Recursively lowercase all dictionary keys to fix LLM capitalization errors
                 def lowercase_keys(obj):
                     if isinstance(obj, dict):
@@ -84,6 +94,16 @@ class OllamaClient:
                         raw_text += "}"
                     
                     data = json.loads(raw_text)
+                    
+                    # LLM robustness check inside auto-fix
+                    if "scene_number" in data and "scenes" not in data:
+                        data = {
+                            "title": "Storyboard",
+                            "target_audience": "Students",
+                            "story_continuity_plan": "Continuous narrative.",
+                            "scenes": [data]
+                        }
+
                     def lowercase_keys(obj):
                         if isinstance(obj, dict):
                             return {str(k).lower(): lowercase_keys(v) for k, v in obj.items()}
