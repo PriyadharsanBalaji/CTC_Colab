@@ -226,6 +226,8 @@ class HFVisionClient:
                     else:
                         return obj
                 
+                import gc; import torch
+                torch.cuda.empty_cache(); gc.collect()
                 return lowercase_keys(data)
             except json.JSONDecodeError as e:
                 print(f"[Error] Failed to parse JSON on attempt {attempt + 1}.")
@@ -250,6 +252,9 @@ class HFVisionClient:
                             return [lowercase_keys(v) for v in obj]
                         else:
                             return obj
+                    
+                    import gc; import torch
+                    torch.cuda.empty_cache(); gc.collect()
                     return lowercase_keys(data)
                 except:
                     if attempt == max_retries - 1:
