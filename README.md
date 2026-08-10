@@ -28,7 +28,7 @@ Kaggle gives you access to 2x T4 GPUs (32GB VRAM total), which provides the mass
 **Cell 1: Install Dependencies**
 ```bash
 !apt-get update && apt-get install -y zstd pciutils build-essential libcairo2-dev libpango1.0-dev ffmpeg
-!pip install pypdf pymupdf pydantic manim requests
+!pip install pdfplumber pypdf pymupdf pydantic manim requests
 ```
 
 **Cell 2: Install and Start Ollama**
