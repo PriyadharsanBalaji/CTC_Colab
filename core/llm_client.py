@@ -142,6 +142,7 @@ class HFVisionClient:
         
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
+            torch_dtype=torch.float16,
             device_map="balanced",
             quantization_config=quantization_config
         )
