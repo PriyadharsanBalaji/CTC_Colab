@@ -133,10 +133,17 @@ class HFVisionClient:
         print(f"Initializing HuggingFace Vision client for model: {model_name} (This may take a few minutes if downloading)")
         
         import torch
+        from transformers import BitsAndBytesConfig
+        
+        # 8-bit quantization cuts the model weight footprint from 15GB to 7.5GB.
+        # Combined with device_map="balanced", each GPU will only hold ~3.75GB of weights.
+        # This leaves an enormous ~11GB of free space on GPU 0 for massive Concept text chunks.
+        quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+        
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
-            device_map="balanced"
+            device_map="balanced",
+            quantization_config=quantization_config
         )
         self.processor = AutoProcessor.from_pretrained(model_name)
 
