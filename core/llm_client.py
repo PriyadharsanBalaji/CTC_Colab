@@ -14,7 +14,7 @@ class OllamaClient:
         self.base_url = base_url
         print(f"Initialized Ollama client for model: {model_name}")
 
-    def generate(self, prompt: str, system: str = "", temperature: float = 0.2, format: str = None) -> str:
+    def generate(self, prompt: str, system: str = "", temperature: float = 0.2, format: str = None, images: list = None) -> str:
         """Raw generation endpoint using Ollama API."""
         url = f"{self.base_url}/api/generate"
         payload = {
@@ -28,6 +28,8 @@ class OllamaClient:
         }
         if format:
             payload["format"] = format
+        if images:
+            payload["images"] = images
             
         try:
             response = requests.post(url, json=payload)
@@ -37,7 +39,7 @@ class OllamaClient:
             print(f"[Ollama Error] Ensure the Ollama server is running! Error: {e}")
             raise e
 
-    def generate_json(self, prompt: str, schema_model: type[BaseModel], max_retries: int = 3) -> dict:
+    def generate_json(self, prompt: str, schema_model: type[BaseModel], max_retries: int = 3, images: list = None) -> dict:
         """
         Generates structured JSON following the provided Pydantic schema, with auto-retry.
         """
@@ -59,7 +61,7 @@ class OllamaClient:
             print(f"[LLM] Generating storyboard (Attempt {attempt + 1}/{max_retries})...")
             
             # Using Ollama's native JSON format feature mathematically guarantees valid JSON!
-            raw_text = self.generate(full_prompt, system=system_prompt, temperature=0.4, format="json")
+            raw_text = self.generate(full_prompt, system=system_prompt, temperature=0.4, format="json", images=images)
             
             try:
                 return json.loads(raw_text)

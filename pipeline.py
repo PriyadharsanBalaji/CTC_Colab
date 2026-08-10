@@ -71,14 +71,14 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     print(f"Processing {len(concepts)} concepts after filtering and limiting.")
 
     # Model Definitions
-    STORYBOARD_MODEL = "deepseek-r1:14b"
+    STORYBOARD_MODEL = "pixtral:12b"
     CODE_MODEL = "Maternion/manim-coder:14b"
 
     # ---------------------------------------------------------
     # PHASE 1: STORYBOARD GENERATION
     # ---------------------------------------------------------
     print("\n" + "="*50)
-    print("PHASE 1: STORYBOARD GENERATION (Ollama)")
+    print(f"PHASE 1: STORYBOARD GENERATION ({STORYBOARD_MODEL})")
     print("="*50)
     
     missing_storyboards = []
@@ -96,7 +96,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
         
         for concept, sb_file in missing_storyboards:
             print(f"  [Task] Generating Storyboard for: {sb_file.stem}...")
-            storyboard = generate_storyboard(client, concept)
+            storyboard = generate_storyboard(client, concept, pdf_path)
             with open(sb_file, "w") as f:
                 f.write(storyboard.model_dump_json(indent=2))
     else:

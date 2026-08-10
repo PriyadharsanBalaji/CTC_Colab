@@ -2,3 +2,5 @@ pdfplumber
 pydantic
 manim
 huggingface_hub
+
+pymupdf
