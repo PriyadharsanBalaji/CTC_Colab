@@ -42,8 +42,8 @@ print("Starting Ollama server...")
 subprocess.Popen(["ollama", "serve"])
 time.sleep(3)
 
-# Pull the models (Llama 3.2 Vision for storyboards, Maternion for Manim code)
-!ollama pull llama3.2-vision:11b
+# Pull the models (LLaVA 13B Vision for storyboards, Maternion for Manim code)
+!ollama pull llava:13b
 !ollama pull Maternion/manim-coder:14b
 ```
 
