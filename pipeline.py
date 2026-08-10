@@ -53,7 +53,7 @@ def run_pipeline(pdf_path: str, limit: int = 10):
     for d in [storyboard_dir, script_dir, video_dir]:
         d.mkdir(parents=True, exist_ok=True)
 
-    print(f"--- Starting V5 Ollama Pipeline for {pdf_path} (Limit: {limit} concepts) ---")
+    print(f"--- Starting V6 Kaggle Pipeline for {pdf_path} (Limit: {limit} concepts) ---")
     
     print("Parsing PDF into Concept Chunks...")
     all_concepts = parse_pdf_to_concepts(pdf_path)
