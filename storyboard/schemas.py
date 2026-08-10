@@ -6,8 +6,9 @@ from pydantic import BaseModel, Field
 class Scene(BaseModel):
     scene_number: int
     narration: str = Field(description="The voiceover text spoken during this scene. MUST be a plain text string.")
-    visual_description: str = Field(description="Describe exactly what appears on screen. MUST be a plain text string. Do NOT output a dictionary or an image URL. MUST connect continuously with the previous scene without wiping the screen.")
+    visual_description: str = Field(description="Describe EXACTLY what shapes, text, and numbers appear on screen. Ban phrases like 'display an image' or 'show a diagram'. Specify explicit layouts (e.g., 'Write 5! = 120 in the center and draw a blue box around it'). MUST connect continuously with the previous scene without wiping the screen.")
     mathematical_concept: str = Field(description="The exact concept from the textbook being explained in this scene. MUST be a plain text string.")
+    latex_equations: List[str] = Field(description="Extract the EXACT mathematical equations, symbols, and formulas from the image using strict LaTeX formatting (e.g. ['x = \\frac{1}{2}', '5! = 120']).")
     animation_instructions: str = Field(description="Instructions for Manim (e.g., 'Fade in the formula, highlight the 6'). MUST be a plain text string.")
 
 class Storyboard(BaseModel):

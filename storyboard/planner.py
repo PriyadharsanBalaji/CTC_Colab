@@ -47,14 +47,16 @@ Source Material Context (Text):
 You also have an IMAGE of the actual textbook page containing this concept. Look at the layout, diagrams, and equations in the image to inform your storyboard!
 
 CRITICAL RULES:
-1. CONTINUOUS STORYTELLING: Your storyboard MUST be one continuous visual flow. Do not abruptly wipe the screen between scenes. The visual elements established in Scene 1 must logically evolve and transition into Scene 2, and so on.
-2. TEXTBOOK ALIGNMENT: Ensure the animation directly relates to and explains the core mathematical concept provided in the Source Material Context and Image.
-3. SCENE LIMIT: Do NOT generate more than 6 scenes total. For large chunks or exercises, summarize them into a maximum of 6 key scenes.
-4. UNIFORM PACING: Each scene MUST represent approximately 8 seconds of screen time. Your narration and visual descriptions should be concise and uniform in length to maintain coherency.
-5. MANIM COMPATIBILITY: Your `visual_description` and `animation_instructions` must be EASILY achievable using basic Manim elements (Text, MathTex, Rectangle, Circle, Arrow). Do not describe highly complex 3D scenes, external 3D models, or intricate custom SVGs. Focus on clean, basic mathematical visualizations.
-6. NARRATION: Write clear, engaging voiceover narration for each scene.
+1. STRICT OCR AND LATEX EXTRACTION: You MUST read the image. If there are equations, formulas, or numbers in the textbook image, you MUST extract them perfectly in LaTeX format. Do NOT skip them. Do NOT use generic placeholders like "solve for x" if the book says "x = 5!".
+2. PEDAGOGICAL FLOW: Start the storyboard with a simple, intuitive, real-world example of the concept *before* throwing equations at the student. Make the concept extremely easy to understand.
+3. CONCRETE VISUALS (NO HALLUCINATION): You are BANNED from using phrases like "display an image", "show a diagram", or "display a series of images". You must tell the animation engine exactly WHAT to draw. 
+   - BAD: "Show an image of permutations."
+   - GOOD: "Draw 3 empty boxes. Place the letters A, B, and C inside them. Write the equation $3! = 6$ below the boxes."
+4. CONTINUOUS STORYTELLING: Your storyboard MUST be one continuous visual flow. Do not abruptly wipe the screen between scenes.
+5. MANIM COMPATIBILITY: Your `visual_description` must be EASILY achievable using basic Manim elements (Text, MathTex, Rectangle, Circle, Arrow). Do not describe highly complex 3D scenes.
+6. SCENE LIMIT: Do NOT generate more than 6 scenes total.
 
-Output the result strictly matching the provided simple JSON schema.
+Output the result strictly matching the provided simple JSON schema. Include the extracted equations in the `latex_equations` list!
 """
 
 def generate_storyboard(client: OllamaClient, concept: ConceptChunk, pdf_path: str) -> Storyboard:
